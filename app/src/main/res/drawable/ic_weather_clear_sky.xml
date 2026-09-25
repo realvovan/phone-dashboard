@@ -1,0 +1,37 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+    <group
+        android:translateX="-115.2"
+        android:translateY="-176.0">
+        <path
+            android:fillColor="@color/sun_yellow"
+            android:pathData="M147.2 196a10 10 0 1 0 0 20 10 10 0 1 0 0-20z"/>
+        <path
+            android:fillColor="@color/sun_yellow"
+            android:pathData="M128.2 206c0-1.1 0.9-2 2-2h4c1.1 0 2 0.9 2 2v0c0 1.1-0.9 2-2 2h-4c-1.1 0-2-0.9-2-2z"/>
+        <path
+            android:fillColor="@color/sun_yellow"
+            android:pathData="M158.2 206c0-1.1 0.9-2 2-2h4c1.1 0 2 0.9 2 2v0c0 1.1-0.9 2-2 2h-4c-1.1 0-2-0.9-2-2z"/>
+        <path
+            android:fillColor="@color/sun_yellow"
+            android:pathData="M147.2 225c-1.1 0-2-0.9-2-2l0-4c0-1.1 0.9-2 2-2v0c1.1 0 2 0.9 2 2l0 4c0 1.1-0.9 2-2 2z"/>
+        <path
+            android:fillColor="@color/sun_yellow"
+            android:pathData="M147.2 195c-1.1 0-2-0.9-2-2l0-4c0-1.1 0.9-2 2-2v0c1.1 0 2 0.9 2 2l0 4c0 1.1-0.9 2-2 2z"/>
+        <path
+            android:fillColor="@color/sun_yellow"
+            android:pathData="M139.03 197.83c-0.78 0.78-2.05 0.78-2.83 0l-2.83-2.82c-0.78-0.78-0.78-2.05 0-2.83v0c0.78-0.78 2.05-0.78 2.83 0l2.83 2.83c0.78 0.78 0.78 2.05 0 2.82z"/>
+        <path
+            android:fillColor="@color/sun_yellow"
+            android:pathData="M155.92 198.53c-0.78-0.78-0.78-2.05 0-2.83l2.83-2.83c0.78-0.78 2.05-0.78 2.83 0v0c0.78 0.78 0.78 2.05 0 2.83l-2.83 2.83c-0.78 0.78-2.05 0.78-2.83 0z"/>
+        <path
+            android:fillColor="@color/sun_yellow"
+            android:pathData="M155.96 213.82c0.78-0.78 2.05-0.78 2.83 0l2.83 2.83c0.78 0.78 0.78 2.05 0 2.83v0c-0.78 0.78-2.05 0.78-2.83 0l-2.83-2.83c-0.78-0.78-0.78-2.05 0-2.83z"/>
+        <path
+            android:fillColor="@color/sun_yellow"
+            android:pathData="M138.66 213.86c0.78 0.78 0.78 2.05 0 2.83l-2.83 2.83c-0.78 0.78-2.05 0.78-2.83 0v0c-0.78-0.78-0.78-2.05 0-2.83l2.83-2.83c0.78-0.78 2.05-0.78 2.83 0z"/>
+    </group>
+</vector>

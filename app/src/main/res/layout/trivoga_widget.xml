@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/trivoga_widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <!-- Circle Container holding shield/alert icons -->
+    <FrameLayout
+        android:id="@+id/circle_container"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/circle_background">
+
+        <ImageView
+            android:id="@+id/no_trivoga_shield"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center"
+            android:contentDescription="@null"
+            android:src="@drawable/no_trivoga_shield"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/trivoga_alert"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center"
+            android:contentDescription="@null"
+            android:src="@drawable/trivoga_alert"
+            android:visibility="gone" />
+
+    </FrameLayout>
+
+    <!-- Province Name Label -->
+    <TextView
+        android:id="@+id/province_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:gravity="center"
+        android:maxLines="2"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        tools:text="Білоцерківський\nрайон" />
+
+</LinearLayout>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/weather_widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <!-- Top Row: City on right -->
+    <RelativeLayout
+        android:id="@+id/top_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:minHeight="28dp">
+
+        <TextView
+            android:id="@+id/city_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:includeFontPadding="false"
+            android:text="San Francisco"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <!-- Weather Icon (Top Left) -->
+    <ImageView
+        android:id="@+id/weather_icon"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_weather_clear_sky" />
+
+    <!-- Current Temperature -->
+    <TextView
+        android:id="@+id/current_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/top_row"
+        android:layout_alignParentStart="true"
+        android:includeFontPadding="false"
+        android:text="24°"
+        android:textColor="#FFFFFF"
+        android:textSize="52sp" />
+
+    <!-- Bottom Block: Conditions, High, Low -->
+    <LinearLayout
+        android:id="@+id/high_low_temps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/current_temp"
+        android:layout_alignParentStart="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/conditions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:text="Cloudy"
+            android:textColor="#D9FFFFFF"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/high_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:text="H:28°"
+            android:textColor="#D9FFFFFF"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/low_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:text="L:18°"
+            android:textColor="#D9FFFFFF"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <!-- Rain Reminder (Hidden by default as per Figma visible="false") -->
+    <TextView
+        android:id="@+id/rain_reminder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/current_temp"
+        android:layout_alignParentStart="true"
+        android:includeFontPadding="false"
+        android:text="85% precipitation chance\nin 2 hours"
+        android:textColor="#D9FFFFFF"
+        android:textSize="12sp"
+        android:visibility="gone" />
+
+    <!-- Weather Unavailable Label -->
+    <TextView
+        android:id="@+id/weather_unavailable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:includeFontPadding="false"
+        android:text="Weather unavailable"
+        android:textStyle="italic"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+</RelativeLayout>
