@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.os.Handler;
 
 import com.vovan.phonedash.R;
+import com.vovan.phonedash.WidgetContainer;
 import com.vovan.phonedash.dataProviders.HttpCallback;
 import com.vovan.phonedash.dataProviders.weatherProviders.Weather;
 import com.vovan.phonedash.dataProviders.weatherProviders.WeatherProvider;
@@ -25,7 +26,9 @@ import java.util.Locale;
  * Automatically scales paddings, font sizes, margins, and squircle corner radius
  * based on the allocated cell dimensions.
  */
-public class WeatherWidget extends LoopingWidget<Weather> {
+public class WeatherWidget
+		extends DashboardWidgetBase<Weather>
+		implements LoopingWidget {
 	// colors
 	private static final int[] CLEAR_SKY_DAY_COLORS = new int[]{0xFF59B8F2,0xFF388CE0};
 	// also use for drizzle night or snow night
@@ -66,12 +69,12 @@ public class WeatherWidget extends LoopingWidget<Weather> {
 	@SuppressLint("InflateParams")
 	public WeatherWidget(
 			Context context,
-			Handler handler,
+			WidgetContainer container,
 			WeatherProvider weatherProvider,
 			int gridX, int gridY,
 			String city, double latitude, double longitude
 	) {
-		super(handler, gridX, gridY);
+		super(container, gridX, gridY);
 
 		this.weatherProvider = weatherProvider;
 
@@ -92,7 +95,7 @@ public class WeatherWidget extends LoopingWidget<Weather> {
 		this.backgroundDrawable = new SquircleDrawable(BASE_CORNER_RADIUS, CLEAR_SKY_DAY_COLORS);
 		this.rootView.setBackground(this.backgroundDrawable);
 
-		this.addAutomaticWidgetStartListeners();
+		this.addStateChangeListeners();
 
 		// Dynamic auto-scaling based on actual widget dimensions
 		this.rootView.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
@@ -233,7 +236,16 @@ public class WeatherWidget extends LoopingWidget<Weather> {
 	}
 
 	@Override
-	protected long onLoop() {
+	public void startWidget() {
+		LoopingWidget.startLoopingWidget(this);
+	}
+	@Override
+	public void pauseWidget() {
+		LoopingWidget.stopLoopingWidget(this);
+	}
+
+	@Override
+	public long onLoop() {
 		this.weatherProvider.getCurrentWeather(this.latitude, this.longitude, new HttpCallback<Weather>() {
 			@Override
 			public void onSuccess(Weather weather) {
@@ -250,7 +262,7 @@ public class WeatherWidget extends LoopingWidget<Weather> {
 				));
 			}
 		});
-		return 1_800_000; // 30 minutes
+		return 1_800_000L; // 30 minutes
 	}
 
 	private static String getConditionsFromWeatherCode(int code) {

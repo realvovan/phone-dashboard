@@ -2,7 +2,6 @@ package com.vovan.phonedash.widgets;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Handler;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -14,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.vovan.phonedash.R;
+import com.vovan.phonedash.WidgetContainer;
 import com.vovan.phonedash.dataProviders.HttpCallback;
 import com.vovan.phonedash.dataProviders.trivogaProviders.Trivoga;
 import com.vovan.phonedash.dataProviders.trivogaProviders.TrivogaProvider;
@@ -23,7 +23,9 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-public class TrivogaWidget extends LoopingWidget<Trivoga> {
+public class TrivogaWidget
+		extends DashboardWidgetBase<Trivoga>
+		implements LoopingWidget {
 	private static final int SAFE_COLOR = 0xFF4EB14E;  // Green
 	private static final int YELLOW_COLOR = 0xFFF2DB33;
 	private static final int RED_COLOR = 0xFFBF2727;
@@ -43,12 +45,12 @@ public class TrivogaWidget extends LoopingWidget<Trivoga> {
 	@SuppressLint("InflateParams")
 	public TrivogaWidget(
 			Context context,
-			Handler handler,
+			WidgetContainer container,
 			TrivogaProvider trivogaProvider,
 			String regionName,
 			int gridX, int gridY)
 	{
-		super(handler, gridX, gridY);
+		super(container, gridX, gridY);
 
 		this.trivogaProvider = trivogaProvider;
 		this.rootView = LayoutInflater.from(context).inflate(R.layout.trivoga_widget, null);
@@ -59,7 +61,7 @@ public class TrivogaWidget extends LoopingWidget<Trivoga> {
 		this.provinceLabel = this.rootView.findViewById(R.id.province_label);
 
 		this.setRegion(regionName);
-		this.addAutomaticWidgetStartListeners();
+		this.addStateChangeListeners();
 
 		// Auto-scale layout elements when the widget dimensions change
 		this.rootView.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
@@ -136,7 +138,7 @@ public class TrivogaWidget extends LoopingWidget<Trivoga> {
 	}
 
 	@Override
-	protected long onLoop() {
+	public long onLoop() {
 		this.trivogaProvider.getAlertInRegion(this.regionName, new HttpCallback<Trivoga>() {
 			@Override
 			public void onSuccess(Trivoga trivoga) {
@@ -150,7 +152,16 @@ public class TrivogaWidget extends LoopingWidget<Trivoga> {
 				circleContainer.getBackground().setTint(GRAY_COLOR);
 			}
 		});
-		return 15000L;
+		return 20000L;
+	}
+
+	@Override
+	public void startWidget() {
+		LoopingWidget.startLoopingWidget(this);
+	}
+	@Override
+	public void pauseWidget() {
+		LoopingWidget.stopLoopingWidget(this);
 	}
 
 	@Override

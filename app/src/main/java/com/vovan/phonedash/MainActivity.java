@@ -44,19 +44,19 @@ public class MainActivity extends FullScreenActivity {
 		Handler handler = new Handler(Looper.getMainLooper());
 		// end dependencies
 
-		widgetContainer = new WidgetContainer(8, 4);
+		widgetContainer = new WidgetContainer(8, 4,handler);
 
-		widgetContainer.addWidget(new ClockWidget(this, handler, 0, 0));
-		widgetContainer.addWidget(new BatteryWidget(this, 2, 0));
-		widgetContainer.addWidget(new TrivogaWidget(this, handler, alertsProvider, "м. Київ", 2, 1));
-		widgetContainer.addWidget(new TrivogaWidget(this, handler, alertsProvider, "Білоцерківський район", 2, 2));
-		widgetContainer.addWidget(new WeatherWidget(this, handler, weatherProvider, 3, 0,"Tetiiv",49.3695,29.6779)); // hard coded the coords for my city lol;
+		widgetContainer.addWidget(new ClockWidget(this, widgetContainer, 0, 0));
+		widgetContainer.addWidget(new BatteryWidget(this, widgetContainer, 2, 0));
+		widgetContainer.addWidget(new TrivogaWidget(this, widgetContainer, alertsProvider, "м. Київ", 2, 1));
+		widgetContainer.addWidget(new TrivogaWidget(this, widgetContainer, alertsProvider, "Білоцерківський район", 2, 2));
+		widgetContainer.addWidget(new WeatherWidget(this, widgetContainer, weatherProvider, 3, 0,"Tetiiv",49.3695,29.6779)); // hard coded the coords for my city lol;
 
 		if (this.showGridSquares) {
 			for (int x = 0; x < widgetContainer.columns; x++) {
 				for (int y = 0; y < widgetContainer.rows; y++) {
 					if (widgetContainer.isCellEmpty(x, y)) {
-						widgetContainer.addWidget(new TestGradientWidget(this, x, y));
+						widgetContainer.addWidget(new TestGradientWidget(this, widgetContainer, x, y));
 					}
 				}
 			}

@@ -18,6 +18,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.vovan.phonedash.R;
+import com.vovan.phonedash.WidgetContainer;
 import com.vovan.phonedash.widgetInfos.BatteryWidgetInfo;
 
 import java.util.Locale;
@@ -46,8 +47,8 @@ public class BatteryWidget extends DashboardWidgetBase<BatteryWidgetInfo> {
 	};
 
 	@SuppressLint("InflateParams")
-	public BatteryWidget(Context context, int gridX, int gridY) {
-		super(gridX, gridY);
+	public BatteryWidget(Context context, WidgetContainer container, int gridX, int gridY) {
+		super(container, gridX, gridY);
 
 		this.rootView = LayoutInflater.from(context).inflate(R.layout.battery_widget, null);
 		this.progressBar = this.rootView.findViewById(R.id.battery_progress);
@@ -57,17 +58,7 @@ public class BatteryWidget extends DashboardWidgetBase<BatteryWidgetInfo> {
 		this.context = context.getApplicationContext();
 
 		// Start/stop listening for battery updates based on view lifecycle
-		this.rootView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-			@Override
-			public void onViewAttachedToWindow(@NonNull View v) {
-				startWidget();
-			}
-
-			@Override
-			public void onViewDetachedFromWindow(@NonNull View v) {
-				pauseWidget();
-			}
-		});
+		this.addStateChangeListeners();
 
 		// Dynamic scaling based on widget size
 		this.rootView.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.vovan.phonedash.R;
+import com.vovan.phonedash.WidgetContainer;
 import com.vovan.phonedash.widgetInfos.ClockWidgetInfo;
 
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +20,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class ClockWidget extends LoopingWidget<ClockWidgetInfo> {
+public class ClockWidget
+		extends DashboardWidgetBase<ClockWidgetInfo>
+		implements LoopingWidget {
 	private final View rootView;
 	private final TextView hoursTextView;
 	private final TextView minutesTextView;
@@ -28,8 +31,8 @@ public class ClockWidget extends LoopingWidget<ClockWidgetInfo> {
 	private final TextView separator2;
 
 	@SuppressLint("InflateParams")
-	public ClockWidget(Context context, Handler handler, int gridX, int gridY) {
-		super(handler,gridX, gridY);
+	public ClockWidget(Context context, WidgetContainer container, int gridX, int gridY) {
+		super(container, gridX, gridY);
 		this.rootView = LayoutInflater.from(context).inflate(R.layout.clock_widget, null);
 
 		this.hoursTextView = this.rootView.findViewById(R.id.hours);
@@ -39,18 +42,7 @@ public class ClockWidget extends LoopingWidget<ClockWidgetInfo> {
 		this.separator2 = this.rootView.findViewById(R.id.separator2);
 
 		// Automatically start/stop updates based on view attachment lifecycle
-		this.addAutomaticWidgetStartListeners();
-//		this.rootView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-//			@Override
-//			public void onViewAttachedToWindow(@NonNull View v) {
-//				startWidget();
-//			}
-//
-//			@Override
-//			public void onViewDetachedFromWindow(@NotNull View v) {
-//				pauseWidget();
-//			}
-//		});
+		this.addStateChangeListeners();
 
 		// Adjust text size when the view is laid out or its size changes
 		this.rootView.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
@@ -86,15 +78,12 @@ public class ClockWidget extends LoopingWidget<ClockWidgetInfo> {
 	public int height() { return 1;	}
 
 	@Override
-	protected long onLoop() {
-		Calendar calendar = Calendar.getInstance();
-		int hours = calendar.get(Calendar.HOUR_OF_DAY);
-		int minutes = calendar.get(Calendar.MINUTE);
-		int seconds = calendar.get(Calendar.SECOND);
-
-		setWidgetInfo(new ClockWidgetInfo(hours,minutes,seconds));
-
-		return 1000;
+	public void startWidget() {
+		LoopingWidget.startLoopingWidget(this);
+	}
+	@Override
+	public void pauseWidget() {
+		LoopingWidget.stopLoopingWidget(this);
 	}
 
 	@Override
@@ -110,5 +99,16 @@ public class ClockWidget extends LoopingWidget<ClockWidgetInfo> {
 	@Override
 	public View getView() {
 		return this.rootView;
+	}
+	@Override
+	public long onLoop() {
+		Calendar calendar = Calendar.getInstance();
+		int hours = calendar.get(Calendar.HOUR_OF_DAY);
+		int minutes = calendar.get(Calendar.MINUTE);
+		int seconds = calendar.get(Calendar.SECOND);
+
+		setWidgetInfo(new ClockWidgetInfo(hours,minutes,seconds));
+
+		return 1000L;
 	}
 }

@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.view.View;
 
+import com.vovan.phonedash.WidgetContainer;
 import com.vovan.phonedash.widgetInfos.EmptyWidgetInfo;
 
 /**
@@ -14,8 +15,8 @@ import com.vovan.phonedash.widgetInfos.EmptyWidgetInfo;
 public class TestGradientWidget extends DashboardWidgetBase<EmptyWidgetInfo> {
 	private final View view;
 
-	public TestGradientWidget(Context context, int gridX, int gridY) {
-		super(gridX, gridY);
+	public TestGradientWidget(Context context, WidgetContainer container, int gridX, int gridY) {
+		super(container, gridX, gridY);
 
 		this.view = new View(context);
 

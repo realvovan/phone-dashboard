@@ -1,9 +1,16 @@
 package com.vovan.phonedash;
 
+import android.os.Handler;
+
 import com.vovan.phonedash.widgets.DashboardWidgetBase;
+import com.vovan.phonedash.widgets.LoopingWidget;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Data model for a container that holds a collection of DashboardWidgets
@@ -13,12 +20,18 @@ import java.util.List;
 public class WidgetContainer {
 	public final int columns;
 	public final int rows;
-	private final List<DashboardWidgetBase<?>> widgets;
+//	private final List<DashboardWidgetBase<?>> widgets;
+	private final Set<DashboardWidgetBase<?>> widgets;
+	private final Handler handler;
+	private final Map<LoopingWidget,Runnable> runnables;
 
-	public WidgetContainer(int columns, int rows) {
+	public WidgetContainer(int columns, int rows, Handler handler) {
 		this.columns = columns;
 		this.rows = rows;
-		this.widgets = new ArrayList<>();
+		this.handler = handler;
+//		this.widgets = new ArrayList<>();
+		this.widgets = new HashSet<>();
+		this.runnables = new HashMap<>();
 	}
 
 	/**
@@ -36,9 +49,7 @@ public class WidgetContainer {
 	 * @return true if the widget was successfully added, false otherwise.
 	 */
 	public boolean addWidget(DashboardWidgetBase<?> widget) {
-		if (widget == null) {
-			return false;
-		}
+		if (widget == null) return false;
 
 		// Check if widget fits within the grid boundaries
 		if (widget.getGridX() < 0 || widget.getGridY() < 0 ||
@@ -48,12 +59,9 @@ public class WidgetContainer {
 		}
 
 		// Check for overlap with existing widgets
-		if (this.hasOverlap(widget)) {
-			return false;
-		}
+		if (this.hasOverlap(widget)) return false;
 
-		this.widgets.add(widget);
-		return true;
+		return this.widgets.add(widget);
 	}
 
 	/**
@@ -63,7 +71,25 @@ public class WidgetContainer {
 	 * @return true if the widget was found and removed, false otherwise.
 	 */
 	public boolean removeWidget(DashboardWidgetBase<?> widget) {
-		return widgets.remove(widget);
+		return this.widgets.remove(widget);
+	}
+
+	public void startRunnableForWidget(LoopingWidget widget) {
+		if (this.runnables.containsKey(widget)) return;
+		Runnable runnable = new Runnable() {
+			@Override
+			public void run() {
+				long delay = widget.onLoop();
+				handler.postDelayed(this,delay);
+			}
+		};
+		this.runnables.put(widget,runnable);
+		this.handler.post(runnable);
+	}
+
+	public void removeRunnableForWidget(LoopingWidget widget) {
+		Runnable runnable = this.runnables.get(widget);
+		if (runnable != null) this.handler.removeCallbacks(runnable);
 	}
 
 	public boolean isCellEmpty(int x, int y) {
@@ -79,9 +105,6 @@ public class WidgetContainer {
 		return true;
 	}
 
-	/**
-	 * Helper to detect overlapping widgets in the grid.
-	 */
 	private boolean hasOverlap(DashboardWidgetBase<?> newWidget) {
 		int newLeft = newWidget.getGridX();
 		int newTop = newWidget.getGridY();

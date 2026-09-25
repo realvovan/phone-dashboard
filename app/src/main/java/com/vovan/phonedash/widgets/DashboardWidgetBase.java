@@ -2,6 +2,10 @@ package com.vovan.phonedash.widgets;
 
 import android.view.View;
 
+import androidx.annotation.NonNull;
+
+import com.vovan.phonedash.WidgetContainer;
+
 /**
  * Generic base class for all dashboard widgets.
  * Stores dimensions and position within a dashboard grid structure.
@@ -9,10 +13,12 @@ import android.view.View;
 public abstract class DashboardWidgetBase<TWidgetInfo> {
 	private int gridX;
 	private int gridY;
+	protected final WidgetContainer container;
 
-	protected DashboardWidgetBase(int gridX, int gridY) {
+	protected DashboardWidgetBase(WidgetContainer container, int gridX, int gridY) {
 		this.gridX = gridX;
 		this.gridY = gridY;
+		this.container = container;
 	}
 
 	public abstract int width();
@@ -33,6 +39,19 @@ public abstract class DashboardWidgetBase<TWidgetInfo> {
 	public final void setGridPosition(int x, int y) {
 		this.gridX = x;
 		this.gridY = y;
+	}
+	protected final void addStateChangeListeners() {
+		this.getView().addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+			@Override
+			public void onViewAttachedToWindow(@NonNull View v) {
+				startWidget();
+			}
+
+			@Override
+			public void onViewDetachedFromWindow(@NonNull View v) {
+				pauseWidget();
+			}
+		});
 	}
 	public void setDefaultWidgetInfo() {
 		this.setWidgetInfo(this.getDefaultWidgetInfo());
