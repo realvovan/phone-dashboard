@@ -17,7 +17,7 @@ import retrofit2.internal.EverythingIsNonNull;
 
 public class AlertsProvider implements TrivogaProvider {
 	private final AlertsClient.AlertsApi alertsApi = new AlertsClient().alertsApi;
-	private final long RESPONSE_CACHING_TIME = 15_000_000_000L; // 15 seconds
+	private final long RESPONSE_CACHING_TIME = 20_000_000_000L; // 20 seconds
 	private AlertsResponse cachedResponse;
 	private long lastCachedResponse = -1L;
 	public void getAlertInRegion(String region, HttpCallback<Trivoga> callback) {

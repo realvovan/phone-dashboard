@@ -120,9 +120,10 @@ public class TrivogaWidget
 	}
 
 	public void setRegion(String newRegion) {
+		Trivoga defaultTrivoga = this.getDefaultWidgetInfo();
+		defaultTrivoga.locationTitle = newRegion;
 		this.regionName = newRegion;
-		this.provinceLabel.setText(newRegion.replace(' ','\n'));
-		this.circleContainer.getBackground().setTint(GRAY_COLOR);
+		this.setWidgetInfo(defaultTrivoga);
 	}
 
 	public String getRegion() { return this.regionName; }
