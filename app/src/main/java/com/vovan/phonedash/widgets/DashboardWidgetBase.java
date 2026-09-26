@@ -1,5 +1,6 @@
 package com.vovan.phonedash.widgets;
 
+import android.content.Context;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -13,9 +14,10 @@ import com.vovan.phonedash.WidgetContainer;
 public abstract class DashboardWidgetBase<TWidgetInfo> {
 	private int gridX;
 	private int gridY;
-	protected final WidgetContainer container;
+	protected WidgetContainer container;
 
-	protected DashboardWidgetBase(WidgetContainer container, int gridX, int gridY) {
+	// Context parameter is required to inflate all widgets, even though it isn't stored in the widget
+	protected DashboardWidgetBase(Context context, WidgetContainer container, int gridX, int gridY) {
 		this.gridX = gridX;
 		this.gridY = gridY;
 		this.container = container;
@@ -53,6 +55,15 @@ public abstract class DashboardWidgetBase<TWidgetInfo> {
 			}
 		});
 	}
+
+	/**
+	 * This method is called when the widget is removed from its container
+	 * Override to clean up any resources used by the widget
+	 */
+	public void onWidgetRemoved() {
+		this.container = null;
+	}
+
 	public void setDefaultWidgetInfo() {
 		this.setWidgetInfo(this.getDefaultWidgetInfo());
 	}

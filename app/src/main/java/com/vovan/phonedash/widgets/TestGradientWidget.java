@@ -16,7 +16,7 @@ public class TestGradientWidget extends DashboardWidgetBase<EmptyWidgetInfo> {
 	private final View view;
 
 	public TestGradientWidget(Context context, WidgetContainer container, int gridX, int gridY) {
-		super(container, gridX, gridY);
+		super(context,container, gridX, gridY);
 
 		this.view = new View(context);
 

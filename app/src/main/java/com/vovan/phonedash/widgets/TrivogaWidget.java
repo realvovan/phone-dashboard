@@ -46,11 +46,11 @@ public class TrivogaWidget
 	public TrivogaWidget(
 			Context context,
 			WidgetContainer container,
+			int gridX, int gridY,
 			TrivogaProvider trivogaProvider,
-			String regionName,
-			int gridX, int gridY)
+			String regionName)
 	{
-		super(container, gridX, gridY);
+		super(context, container, gridX, gridY);
 
 		this.trivogaProvider = trivogaProvider;
 		this.rootView = LayoutInflater.from(context).inflate(R.layout.trivoga_widget, null);

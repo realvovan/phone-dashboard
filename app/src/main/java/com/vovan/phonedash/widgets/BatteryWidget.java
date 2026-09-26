@@ -48,7 +48,7 @@ public class BatteryWidget extends DashboardWidgetBase<BatteryWidgetInfo> {
 
 	@SuppressLint("InflateParams")
 	public BatteryWidget(Context context, WidgetContainer container, int gridX, int gridY) {
-		super(container, gridX, gridY);
+		super(context, container, gridX, gridY);
 
 		this.rootView = LayoutInflater.from(context).inflate(R.layout.battery_widget, null);
 		this.progressBar = this.rootView.findViewById(R.id.battery_progress);

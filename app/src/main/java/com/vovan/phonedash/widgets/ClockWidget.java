@@ -32,7 +32,7 @@ public class ClockWidget
 
 	@SuppressLint("InflateParams")
 	public ClockWidget(Context context, WidgetContainer container, int gridX, int gridY) {
-		super(container, gridX, gridY);
+		super(context, container, gridX, gridY);
 		this.rootView = LayoutInflater.from(context).inflate(R.layout.clock_widget, null);
 
 		this.hoursTextView = this.rootView.findViewById(R.id.hours);

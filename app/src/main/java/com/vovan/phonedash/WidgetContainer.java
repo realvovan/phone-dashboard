@@ -17,10 +17,9 @@ import java.util.Set;
  * organized within a fixed X by Y (columns by rows) grid.
  * This class is independent of Android Activity lifecycles or UI specifics.
  */
-public class WidgetContainer {
+public final class WidgetContainer {
 	public final int columns;
 	public final int rows;
-//	private final List<DashboardWidgetBase<?>> widgets;
 	private final Set<DashboardWidgetBase<?>> widgets;
 	private final Handler handler;
 	private final Map<LoopingWidget,Runnable> runnables;
@@ -29,7 +28,6 @@ public class WidgetContainer {
 		this.columns = columns;
 		this.rows = rows;
 		this.handler = handler;
-//		this.widgets = new ArrayList<>();
 		this.widgets = new HashSet<>();
 		this.runnables = new HashMap<>();
 	}
@@ -71,7 +69,14 @@ public class WidgetContainer {
 	 * @return true if the widget was found and removed, false otherwise.
 	 */
 	public boolean removeWidget(DashboardWidgetBase<?> widget) {
-		return this.widgets.remove(widget);
+		boolean isRemoved = this.widgets.remove(widget);
+		if (!isRemoved) return false;
+		widget.onWidgetRemoved();
+		if (widget instanceof LoopingWidget) {
+			Runnable widgetRunnable = this.runnables.remove(widget);
+			if (widgetRunnable != null) this.handler.removeCallbacks(widgetRunnable);
+		}
+		return true;
 	}
 
 	public void startRunnableForWidget(LoopingWidget widget) {
@@ -98,7 +103,7 @@ public class WidgetContainer {
 			int wTop = w.getGridY();
 			int wRight = wLeft + w.width();
 			int wBottom = wTop + w.height();
-			if (wLeft < x && wRight > x && wTop < y && wBottom > y) {
+			if (wLeft <= x && wRight >= x && wTop <= y && wBottom >= y) {
 				return false;
 			}
 		}

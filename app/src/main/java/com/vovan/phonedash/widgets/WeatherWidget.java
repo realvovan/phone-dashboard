@@ -70,11 +70,11 @@ public class WeatherWidget
 	public WeatherWidget(
 			Context context,
 			WidgetContainer container,
-			WeatherProvider weatherProvider,
 			int gridX, int gridY,
+			WeatherProvider weatherProvider,
 			String city, double latitude, double longitude
 	) {
-		super(container, gridX, gridY);
+		super(context, container, gridX, gridY);
 
 		this.weatherProvider = weatherProvider;
 
