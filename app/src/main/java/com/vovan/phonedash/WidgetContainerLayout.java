@@ -121,8 +121,8 @@ public final class WidgetContainerLayout extends ViewGroup {
 		}
 
 		// Account for the extra margin created by the pixel shifter
-		int usableWidth = Math.max(0, availableWidth - (WidgetPixelShifter.SHIFT_LENGTH * 2));
-		int usableHeight = Math.max(0, availableHeight - (WidgetPixelShifter.SHIFT_LENGTH * 2));
+		int usableWidth = Math.max(0, availableWidth - (WidgetPixelShifter.SHIFT_LENGTH * WidgetPixelShifter.STEP_SIZE * 2));
+		int usableHeight = Math.max(0, availableHeight - (WidgetPixelShifter.SHIFT_LENGTH * WidgetPixelShifter.STEP_SIZE * 2));
 
 		// Determine the maximum possible size for a single cell so the entire grid fits inside usable bounds
 		int maxCellWidth = usableWidth / columns;

@@ -29,6 +29,7 @@ final class WidgetPixelShifter {
 			new ShiftPattern(createShift(0,1), createShift(1,-1), createShift(0,1), createShift(-1,-1))
 	};
 	public static final int SHIFT_LENGTH = 10;
+	public static final int STEP_SIZE = 3;
 
 	// keeps track of the randomized pattern, which automatically picks the next pattern once the current one ends
 	private int currentShiftPatternIndex = getRandomShiftPatternIndex();
@@ -39,8 +40,8 @@ final class WidgetPixelShifter {
 
 	public void shift(WidgetContainerLayout containerLayout) {
 		int[] dir = SHIFT_PATTERNS[currentShiftPatternIndex].shifts[currentShiftDirectionIndex];
-		containerLayout.setTranslationX(dir[0] + containerLayout.getTranslationX());
-		containerLayout.setTranslationY(dir[1] + containerLayout.getTranslationY());
+		containerLayout.setTranslationX(dir[0] * STEP_SIZE + containerLayout.getTranslationX());
+		containerLayout.setTranslationY(dir[1] * STEP_SIZE + containerLayout.getTranslationY());
 
 		currentShiftStep++;
 		if (currentShiftStep != SHIFT_LENGTH) return;
