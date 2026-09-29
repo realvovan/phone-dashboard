@@ -169,16 +169,16 @@ public class TrivogaWidget
 	public void setWidgetInfo(Trivoga info) {
 		this.provinceLabel.setText(getProvinceLabelText(info));
 
-		if (Trivoga.AlertLevel.GREEN.equals(info.alertLevel)) {
+		if (info.alertLevel == Trivoga.AlertLevel.GREEN) {
 			this.noTrivogaShield.setVisibility(View.VISIBLE);
 			this.trivogaAlert.setVisibility(View.GONE);
 			this.circleContainer.getBackground().setTint(SAFE_COLOR);
 		} else {
 			this.noTrivogaShield.setVisibility(View.GONE);
 			this.trivogaAlert.setVisibility(View.VISIBLE);
-			if (Trivoga.AlertLevel.RED.equals(info.alertLevel)) {
+			if (info.alertLevel == Trivoga.AlertLevel.RED) {
 				this.circleContainer.getBackground().setTint(RED_COLOR);
-			} else if (Trivoga.AlertLevel.YELLOW.equals(info.alertLevel)) {
+			} else if (info.alertLevel == Trivoga.AlertLevel.YELLOW) {
 				this.circleContainer.getBackground().setTint(YELLOW_COLOR);
 			} else {
 				this.circleContainer.getBackground().setTint(GRAY_COLOR);
