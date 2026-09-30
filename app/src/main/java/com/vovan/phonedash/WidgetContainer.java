@@ -93,7 +93,7 @@ public final class WidgetContainer {
 	}
 
 	public void removeRunnableForWidget(LoopingWidget widget) {
-		Runnable runnable = this.runnables.get(widget);
+		Runnable runnable = this.runnables.remove(widget);
 		if (runnable != null) this.handler.removeCallbacks(runnable);
 	}
 

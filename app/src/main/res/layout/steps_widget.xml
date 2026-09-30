@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/steps_widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <!-- Outer Frame (Occupies Bottom Half of Widget) -->
+    <RelativeLayout
+        android:id="@+id/outer_frame"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp">
+
+        <!-- "STEPS:" Label Above Progress Bar -->
+        <TextView
+            android:id="@+id/steps_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="monospace"
+            android:includeFontPadding="false"
+            android:text="STEPS:"
+            android:textColor="#FFFFFF"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+        <!-- Container Holding Progress Bar + Overlaid Step Count -->
+        <FrameLayout
+            android:id="@+id/progress_container"
+            android:layout_width="match_parent"
+            android:layout_height="18dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="2dp">
+
+            <ProgressBar
+                android:id="@+id/step_progress_bar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:indeterminate="false"
+                android:max="8000"
+                android:progress="1000"
+                android:progressDrawable="@drawable/steps_progress_drawable" />
+
+            <TextView
+                android:id="@+id/step_count_overlay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="monospace"
+                android:includeFontPadding="false"
+                android:textColor="#FFFFFF"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                tools:text="2000 / 8000" />
+
+        </FrameLayout>
+
+    </RelativeLayout>
+
+    <!-- Shoe Glyph (Top Left: Spans from Top of Widget to Start of Outer Frame, Slightly Overlapping It) -->
+    <ImageView
+        android:id="@+id/shoe_icon"
+        android:layout_width="80dp"
+        android:layout_height="65dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/shoe" />
+
+</RelativeLayout>

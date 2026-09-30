@@ -1,6 +1,7 @@
 package com.vovan.phonedash;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -8,16 +9,19 @@ import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.vovan.phonedash.backend.DashboardServerService;
 import com.vovan.phonedash.dataProviders.trivogaProviders.alertsInUaProvider.AlertsProvider;
 import com.vovan.phonedash.dataProviders.weatherProviders.OpenMeteo.OpenMeteoWeatherProvider;
 import com.vovan.phonedash.widgets.*;
 
 public class MainActivity extends FullScreenActivity {
 	private final boolean showGridSquares = false;
+	private WidgetContainerLayout container;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +44,15 @@ public class MainActivity extends FullScreenActivity {
 		Handler handler = new Handler(Looper.getMainLooper());
 		// end dependencies
 
+		// backend server
+		ContextCompat.startForegroundService(this, new Intent(this, DashboardServerService.class));
+
 		// widget container
-		WidgetContainerLayout container = new WidgetContainerLayout(this,handler,8,4);
+		container = new WidgetContainerLayout(this,handler,8,4);
 
 		container.addWidget(ClockWidget.class,0,0);
 		container.addWidget(BatteryWidget.class,2,0);
+		container.addWidget(StepsWidget.class,0,1,8000,6500);
 		container.addWidget(TrivogaWidget.class,2,1,alertsProvider,"м. Київ");
 		container.addWidget(WeatherWidget.class,3,0,weatherProvider,"Tetiiv",49.3695,29.6779); // hard coded the coords for my city lol;
 		handler.postDelayed(() -> {
@@ -79,5 +87,13 @@ public class MainActivity extends FullScreenActivity {
 				handler.postDelayed(this,30000); // shifts every 30 seconds
 			}
 		});
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		for (DashboardWidgetBase<?> i : container.widgetContainer.getWidgets()) {
+			container.widgetContainer.removeWidget(i);
+		}
 	}
 }

@@ -3,6 +3,7 @@ package com.vovan.phonedash.widgets;
 import android.content.Context;
 import android.view.View;
 
+import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 
 import com.vovan.phonedash.WidgetContainer;
@@ -60,6 +61,7 @@ public abstract class DashboardWidgetBase<TWidgetInfo> {
 	 * This method is called when the widget is removed from its container
 	 * Override to clean up any resources used by the widget
 	 */
+	@CallSuper
 	public void onWidgetRemoved() {
 		this.container = null;
 	}
