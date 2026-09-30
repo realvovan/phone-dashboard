@@ -64,5 +64,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:3.0.0") // json converter
     implementation("com.squareup.okhttp3:okhttp:5.1.0") // okhttp for making http requests
 
+    implementation("org.nanohttpd:nanohttpd:2.3.1") // simple backend
+
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4") // i think its for the Instant.parse()
 }
