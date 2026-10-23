@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import com.vovan.phonedash.widgets.DashboardWidgetBase;
 
 import java.lang.reflect.Constructor;
+import java.util.Objects;
 
 /**
  * A custom ViewGroup that handles putting widget UI elements on the screen.
@@ -83,13 +84,14 @@ public final class WidgetContainerLayout extends ViewGroup {
 		System.arraycopy(params,0,args,BASE_ARG_COUNT,params.length);
 
 		try {
-			T widget = widgetClass.cast(constructor.newInstance(args));
+			T widget = Objects.requireNonNull(widgetClass.cast(constructor.newInstance(args)));
 			boolean isAdded = this.addWidget(widget);
 			if (isAdded) return widget;
+			widget.onWidgetRemoved();
+			return null;
 		} catch (ReflectiveOperationException | IllegalArgumentException e) {
 			throw new RuntimeException("Failed to create widget " + widgetClass.getName(), e);
 		}
-		throw new RuntimeException("Unexpected error occurred trying to create widget " + widgetClass.getName());
 	}
 
 	public boolean removeWidget(DashboardWidgetBase<?> widget) {
