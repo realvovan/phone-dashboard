@@ -55,6 +55,9 @@ public class MainActivity extends FullScreenActivity {
 		container.addWidget(StepsWidget.class,0,1,8000,6500);
 		container.addWidget(TrivogaWidget.class,2,1,alertsProvider,"м. Київ");
 		container.addWidget(WeatherWidget.class,3,0,weatherProvider,"Tetiiv",49.3695,29.6779); // hard coded the coords for my city lol;
+		TallClockWidget tallClockWidget = new TallClockWidget(this,container.widgetContainer,5,0);
+		tallClockWidget.setWidgetColor(0xFF102133);
+		container.addWidget(tallClockWidget);
 		handler.postDelayed(() -> {
 			// creates the widget after 3.5 seconds so that hopefully it can use the cached response lolol
 			container.addWidget(TrivogaWidget.class,2,2,alertsProvider,"Білоцерківський район");
