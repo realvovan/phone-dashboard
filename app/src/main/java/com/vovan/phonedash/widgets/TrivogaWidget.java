@@ -203,7 +203,7 @@ public class TrivogaWidget
 	private static String getProvinceLabelText(Trivoga trivoga) {
 		String regionText =
 				"м. Київ".equals(trivoga.locationTitle) || "м. Севастополь".equals(trivoga.locationTitle)
-				? trivoga.locationTitle
+				? trivoga.locationTitle + "\n "
 				: trivoga.locationTitle.replaceFirst(" ","\n");
 
 
