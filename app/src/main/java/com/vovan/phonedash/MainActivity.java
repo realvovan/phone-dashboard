@@ -19,6 +19,8 @@ import com.vovan.phonedash.dataProviders.trivogaProviders.alertsInUaProvider.Ale
 import com.vovan.phonedash.dataProviders.weatherProviders.OpenMeteo.OpenMeteoWeatherProvider;
 import com.vovan.phonedash.widgets.*;
 
+import java.util.Objects;
+
 public class MainActivity extends FullScreenActivity {
 	private final boolean showGridSquares = false;
 	private WidgetContainerLayout container;
@@ -50,18 +52,14 @@ public class MainActivity extends FullScreenActivity {
 		// widget container
 		container = new WidgetContainerLayout(this,handler,8,4);
 
-		container.addWidget(ClockWidget.class,0,0);
-		container.addWidget(BatteryWidget.class,2,0);
-		container.addWidget(StepsWidget.class,0,1,8000,6500);
-		container.addWidget(TrivogaWidget.class,2,1,alertsProvider,"м. Київ");
-		container.addWidget(WeatherWidget.class,3,0,weatherProvider,"Tetiiv",49.3695,29.6779); // hard coded the coords for my city lol;
-		TallClockWidget tallClockWidget = new TallClockWidget(this,container.widgetContainer,5,0);
-		tallClockWidget.setWidgetColor(0xFF102133);
-		container.addWidget(tallClockWidget);
-		handler.postDelayed(() -> {
-			// creates the widget after 3.5 seconds so that hopefully it can use the cached response lolol
-			container.addWidget(TrivogaWidget.class,2,2,alertsProvider,"Білоцерківський район");
-		},3500);
+		Objects.requireNonNull(
+				container.addWidget(TallClockWidget.class,0,0)
+		).setWidgetColor(0xFF102133);
+		container.addWidget(BatteryWidget.class,7,0);
+		container.addWidget(WeatherWidget.class,5,0,weatherProvider,"Tetiiv",49.3695,29.6779); // hard coded the coords for my city lol;
+		container.addWidget(StepsWidget.class,3,0,8000,6500);
+		container.addWidget(TrivogaWidget.class,3,1,alertsProvider,"м. Київ");
+		container.addWidget(TrivogaWidget.class,4,1,alertsProvider,"Білоцерківський район");
 
 		if (this.showGridSquares) {
 			for (int x = 0; x < container.getColumns(); x++) {
