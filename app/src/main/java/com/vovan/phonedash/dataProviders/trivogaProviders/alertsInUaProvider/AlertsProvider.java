@@ -2,6 +2,8 @@ package com.vovan.phonedash.dataProviders.trivogaProviders.alertsInUaProvider;
 
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import com.vovan.phonedash.BuildConfig;
 import com.vovan.phonedash.dataProviders.HttpCallback;
 import com.vovan.phonedash.dataProviders.HttpUtils;
@@ -9,6 +11,7 @@ import com.vovan.phonedash.dataProviders.trivogaProviders.Trivoga;
 import com.vovan.phonedash.dataProviders.trivogaProviders.TrivogaProvider;
 
 import java.time.Instant;
+import java.util.concurrent.CompletableFuture;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -17,16 +20,30 @@ import retrofit2.internal.EverythingIsNonNull;
 
 public class AlertsProvider implements TrivogaProvider {
 	private final AlertsClient.AlertsApi alertsApi = new AlertsClient().alertsApi;
-	private final long RESPONSE_CACHING_TIME = 20_000_000_000L; // 20 seconds
+	private static final long RESPONSE_CACHING_TIME = 20_000_000_000L; // 20 seconds
 	private AlertsResponse cachedResponse;
 	private long lastCachedResponse = -1L;
-	public void getAlertInRegion(String region, HttpCallback<Trivoga> callback) {
+	@Nullable
+	private CompletableFuture<Void> alertRequestLock;
+	public synchronized void getAlertInRegion(String region, HttpCallback<Trivoga> callback) {
 		long currentTime = System.nanoTime();
 		if (currentTime - this.lastCachedResponse < RESPONSE_CACHING_TIME && this.cachedResponse != null) {
 			Log.i("AlertsClient","Getting alert in region from cached response");
 			callback.onSuccess(getTrivogaFromResponse(this.cachedResponse,region));
 			return;
 		}
+
+		// if another request already in processing, wait for it to complete and use the cached value
+		if (this.alertRequestLock != null) {
+			this.alertRequestLock.thenRun(() -> {
+				Log.i("AlertsClient","Getting alert in region from CompletableFuture");
+				callback.onSuccess(getTrivogaFromResponse(cachedResponse,region));
+			});
+			return;
+		}
+		this.alertRequestLock = new CompletableFuture<>();
+
+		Log.i("AlertsClient","Getting alert in region from Alerts.in.ua server");
 		this.alertsApi.getActiveAlerts(BuildConfig.ALERTS_IN_UA_KEY).enqueue(new Callback<AlertsResponse>() {
 			@Override
 			@EverythingIsNonNull
@@ -36,6 +53,9 @@ public class AlertsProvider implements TrivogaProvider {
 				cachedResponse = body;
 				lastCachedResponse = currentTime;
 				callback.onSuccess(getTrivogaFromResponse(body,region));
+				// release the lock
+				alertRequestLock.complete(null);
+				alertRequestLock = null;
 			}
 
 			@Override
