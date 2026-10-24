@@ -286,7 +286,7 @@ public class WeatherWidget
 		switch (code) {
 			case 0: case 1: return isDay ? CLEAR_SKY_DAY_COLORS : CLEAR_SKY_NIGHT_COLORS;
 			case 2: return isDay ? PARTLY_CLOUDY_DAY_COLORS : PARTLY_CLOUDY_NIGHT_COLORS;
-			case 3: return CLOUDY_COLORS;
+			case 3: return isDay ? CLOUDY_COLORS : CLEAR_SKY_NIGHT_COLORS;
 			case 45: case 48: return FOGGY_COLORS;
 			case 51: case 53: case 55: return isDay ? DRIZZLE_DAY_COLORS : CLEAR_SKY_NIGHT_COLORS;
 			case 61: case 63: case 80: case 81: case 82:
