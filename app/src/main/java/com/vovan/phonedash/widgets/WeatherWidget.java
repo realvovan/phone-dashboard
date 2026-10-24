@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.os.Handler;
+import android.widget.Toast;
 
 import com.vovan.phonedash.R;
 import com.vovan.phonedash.WidgetContainer;
@@ -28,7 +28,7 @@ import java.util.Locale;
  */
 public class WeatherWidget
 		extends DashboardWidgetBase<Weather>
-		implements LoopingWidget {
+		implements LoopingWidget, ClickableWidget {
 	// colors
 	private static final int[] CLEAR_SKY_DAY_COLORS = new int[]{0xFF59B8F2,0xFF388CE0};
 	// also use for drizzle night or snow night
@@ -44,7 +44,6 @@ public class WeatherWidget
 	private static final int[] THUNDER_COLORS = new int[]{0xFF313024,0xFF232831};
 	private static final int[] WEATHER_UNAVAILABLE_COLORS = new int[]{0xFF3D444A,0xFF3D444A};
 
-	// Reference base dimensions from Figma spec
 	private static final float BASE_DESIGN_SIZE = 170f;
 	private static final float BASE_PADDING = 14.4f;
 	private static final float BASE_CORNER_RADIUS = 20f;
@@ -54,6 +53,7 @@ public class WeatherWidget
 
 	private double latitude;
 	private double longitude;
+	private Context context;
 
 	private final View rootView;
 	private final ImageView weatherIcon;
@@ -77,6 +77,7 @@ public class WeatherWidget
 		super(context, container, gridX, gridY);
 
 		this.weatherProvider = weatherProvider;
+		this.context = context;
 
 		this.rootView = LayoutInflater.from(context).inflate(R.layout.weather_widget, null);
 
@@ -242,7 +243,6 @@ public class WeatherWidget
 			@Override
 			public void onSuccess(Weather weather) {
 				setWidgetInfo(weather);
-				Log.i("WeatherWidget","Updated weather");
 			}
 
 			@Override
@@ -255,6 +255,22 @@ public class WeatherWidget
 			}
 		});
 		return 1_800_000L; // 30 minutes
+	}
+
+	@Override
+	public void onClick(View view) {}
+
+	@Override
+	public boolean onLongClick(View view) {
+		this.onLoop();
+		Toast.makeText(this.context, "Weather updated", Toast.LENGTH_SHORT).show();
+		return true;
+	}
+
+	@Override
+	public void onWidgetRemoved() {
+		super.onWidgetRemoved();
+		this.context = null;
 	}
 
 	private static String getConditionsFromWeatherCode(int code) {
