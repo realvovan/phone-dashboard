@@ -3,6 +3,7 @@ package com.vovan.phonedash;
 import android.os.Handler;
 
 import com.vovan.phonedash.widgetHandlers.*;
+import com.vovan.phonedash.widgets.ClickableWidget;
 import com.vovan.phonedash.widgets.DashboardWidgetBase;
 import com.vovan.phonedash.widgets.LoopingWidget;
 
@@ -21,12 +22,14 @@ public final class WidgetContainer {
 	public final int rows;
 	private final Set<DashboardWidgetBase<?>> widgets;
 	private final LoopingWidgetsHandler loopingWidgetsHandler;
+	private final ClickableWidgetsHandler clickableWidgetsHandler;
 
 	public WidgetContainer(int columns, int rows, Handler handler) {
 		this.columns = columns;
 		this.rows = rows;
 		this.widgets = new HashSet<>();
 		this.loopingWidgetsHandler = new LoopingWidgetsHandler(handler);
+		this.clickableWidgetsHandler = new ClickableWidgetsHandler();
 	}
 
 	/**
@@ -79,6 +82,12 @@ public final class WidgetContainer {
 				this.loopingWidgetsHandler.startLoopingWidget((LoopingWidget) widget);
 			} else {
 				this.loopingWidgetsHandler.stopLoopingWidget((LoopingWidget) widget);
+			}
+		} else if (widget instanceof ClickableWidget) {
+			if (newState == WidgetStateChange.STARTED) {
+				this.clickableWidgetsHandler.startClickableWidget((DashboardWidgetBase<?> & ClickableWidget) widget);
+			} else {
+				this.clickableWidgetsHandler.pauseClickableWidget(widget);
 			}
 		}
 	}
