@@ -1,0 +1,19 @@
+## This is an example file showing what should be in local.properties.
+## Copy this file to 'local.properties' and fill in your actual values.
+## DO NOT commit your final 'local.properties' file to version control!
+
+# -------------------------------------------------------------------
+# Android SDK & Build Tools Configuration
+# -------------------------------------------------------------------
+# The absolute path to your local Android SDK installation directory.
+# Windows typical: sdk.dir=C\:\\Users\\YOUR_USERNAME\\AppData\\Local\\Android\\Sdk
+# macOS typical:   sdk.dir=/Users/YOUR_USERNAME/Library/Android/sdk
+# Linux typical:   sdk.dir=/home/YOUR_USERNAME/Android/Sdk
+sdk.dir=
+
+# -------------------------------------------------------------------
+# Third-Party API Keys & Tokens
+# -------------------------------------------------------------------
+# Add your custom API configurations below.
+# These will be read by your build.gradle script.
+ALERTS_IN_UA_KEY=
