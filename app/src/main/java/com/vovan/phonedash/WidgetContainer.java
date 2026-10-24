@@ -83,7 +83,8 @@ public final class WidgetContainer {
 			} else {
 				this.loopingWidgetsHandler.stopLoopingWidget((LoopingWidget) widget);
 			}
-		} else if (widget instanceof ClickableWidget) {
+		}
+		if (widget instanceof ClickableWidget) {
 			if (newState == WidgetStateChange.STARTED) {
 				this.clickableWidgetsHandler.startClickableWidget((DashboardWidgetBase<?> & ClickableWidget) widget);
 			} else {
