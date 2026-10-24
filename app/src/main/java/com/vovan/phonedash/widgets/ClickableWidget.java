@@ -4,4 +4,5 @@ import android.view.View;
 
 public interface ClickableWidget {
 	void onClick(View view);
+	default boolean onLongClick(View view) { return false; }
 }
