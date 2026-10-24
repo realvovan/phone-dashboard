@@ -229,7 +229,6 @@ public class StepsWidget
 	@Override
 	public void startWidget() {
 		super.startWidget();
-		this.rootView.setOnClickListener(this::onClick);
 		HealthRegistry.addHealthUpdateCallback(this.healthUpdateCallback);
 		this.healthUpdateCallback.onUpdate();
 	}
@@ -237,7 +236,6 @@ public class StepsWidget
 	@Override
 	public void pauseWidget() {
 		super.pauseWidget();
-		this.rootView.setOnTouchListener(null);
 		HealthRegistry.removeHealthUpdateCallback(this.healthUpdateCallback);
 	}
 
