@@ -225,6 +225,7 @@ public class WeatherWidget
 
 		this.weatherIcon.setVisibility(View.VISIBLE);
 		this.currentTemp.setVisibility(View.VISIBLE);
+		this.weatherUnavailable.setVisibility(View.GONE);
 	}
 
 	@Override
