@@ -45,11 +45,6 @@ public class TestGradientWidget extends DashboardWidgetBase<EmptyWidgetInfo> {
 	public int height() {
 		return 1;
 	}
-
-	@Override
-	public void startWidget() {}
-	@Override
-	public void pauseWidget() {}
 	@Override
 	public void setWidgetInfo(EmptyWidgetInfo i) {}
 	@Override

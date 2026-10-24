@@ -7,6 +7,7 @@ import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 
 import com.vovan.phonedash.WidgetContainer;
+import com.vovan.phonedash.WidgetStateChange;
 
 /**
  * Generic base class for all dashboard widgets.
@@ -26,8 +27,6 @@ public abstract class DashboardWidgetBase<TWidgetInfo> {
 
 	public abstract int width();
 	public abstract int height();
-	public abstract void startWidget();
-	public abstract void pauseWidget();
 	public abstract void setWidgetInfo(TWidgetInfo info);
 	public abstract View getView();
 	public abstract TWidgetInfo getDefaultWidgetInfo();
@@ -68,5 +67,14 @@ public abstract class DashboardWidgetBase<TWidgetInfo> {
 
 	public void setDefaultWidgetInfo() {
 		this.setWidgetInfo(this.getDefaultWidgetInfo());
+	}
+
+	@CallSuper
+	public void startWidget() {
+		this.container.notifyWidgetStateChange(this, WidgetStateChange.STARTED);
+	}
+	@CallSuper
+	public void pauseWidget() {
+		this.container.notifyWidgetStateChange(this, WidgetStateChange.PAUSED);
 	}
 }

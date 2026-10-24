@@ -157,15 +157,6 @@ public class TrivogaWidget
 	}
 
 	@Override
-	public void startWidget() {
-		LoopingWidget.startLoopingWidget(this);
-	}
-	@Override
-	public void pauseWidget() {
-		LoopingWidget.stopLoopingWidget(this);
-	}
-
-	@Override
 	public void setWidgetInfo(Trivoga info) {
 		this.provinceLabel.setText(getProvinceLabelText(info));
 

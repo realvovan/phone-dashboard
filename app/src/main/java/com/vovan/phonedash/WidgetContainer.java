@@ -2,14 +2,13 @@ package com.vovan.phonedash;
 
 import android.os.Handler;
 
+import com.vovan.phonedash.widgetHandlers.*;
 import com.vovan.phonedash.widgets.DashboardWidgetBase;
 import com.vovan.phonedash.widgets.LoopingWidget;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -21,15 +20,13 @@ public final class WidgetContainer {
 	public final int columns;
 	public final int rows;
 	private final Set<DashboardWidgetBase<?>> widgets;
-	private final Handler handler;
-	private final Map<LoopingWidget,Runnable> runnables;
+	private final LoopingWidgetsHandler loopingWidgetsHandler;
 
 	public WidgetContainer(int columns, int rows, Handler handler) {
 		this.columns = columns;
 		this.rows = rows;
-		this.handler = handler;
 		this.widgets = new HashSet<>();
-		this.runnables = new HashMap<>();
+		this.loopingWidgetsHandler = new LoopingWidgetsHandler(handler);
 	}
 
 	/**
@@ -72,29 +69,18 @@ public final class WidgetContainer {
 		boolean isRemoved = this.widgets.remove(widget);
 		if (!isRemoved) return false;
 		widget.onWidgetRemoved();
-		if (widget instanceof LoopingWidget) {
-			Runnable widgetRunnable = this.runnables.remove(widget);
-			if (widgetRunnable != null) this.handler.removeCallbacks(widgetRunnable);
-		}
+		if (widget instanceof LoopingWidget) this.loopingWidgetsHandler.stopLoopingWidget((LoopingWidget) widget);
 		return true;
 	}
 
-	public void startRunnableForWidget(LoopingWidget widget) {
-		if (this.runnables.containsKey(widget)) return;
-		Runnable runnable = new Runnable() {
-			@Override
-			public void run() {
-				long delay = widget.onLoop();
-				handler.postDelayed(this,delay);
+	public void notifyWidgetStateChange(DashboardWidgetBase<?> widget, WidgetStateChange newState) {
+		if (widget instanceof LoopingWidget) {
+			if (newState == WidgetStateChange.STARTED) {
+				this.loopingWidgetsHandler.startLoopingWidget((LoopingWidget) widget);
+			} else {
+				this.loopingWidgetsHandler.stopLoopingWidget((LoopingWidget) widget);
 			}
-		};
-		this.runnables.put(widget,runnable);
-		this.handler.post(runnable);
-	}
-
-	public void removeRunnableForWidget(LoopingWidget widget) {
-		Runnable runnable = this.runnables.remove(widget);
-		if (runnable != null) this.handler.removeCallbacks(runnable);
+		}
 	}
 
 	public boolean isCellEmpty(int x, int y) {

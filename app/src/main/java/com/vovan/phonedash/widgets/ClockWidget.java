@@ -78,15 +78,6 @@ public class ClockWidget
 	public int height() { return 1;	}
 
 	@Override
-	public void startWidget() {
-		LoopingWidget.startLoopingWidget(this);
-	}
-	@Override
-	public void pauseWidget() {
-		LoopingWidget.stopLoopingWidget(this);
-	}
-
-	@Override
 	public void setWidgetInfo(ClockWidgetInfo info) {
 		this.hoursTextView.setText(String.format(Locale.getDefault(), "%02d", info.hours));
 		this.minutesTextView.setText(String.format(Locale.getDefault(), "%02d", info.minutes));

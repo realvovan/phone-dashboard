@@ -137,16 +137,6 @@ public class TallClockWidget
 	}
 
 	@Override
-	public void startWidget() {
-		LoopingWidget.startLoopingWidget(this);
-	}
-
-	@Override
-	public void pauseWidget() {
-		LoopingWidget.stopLoopingWidget(this);
-	}
-
-	@Override
 	public long onLoop() {
 		Calendar calendar = Calendar.getInstance();
 		int hours = calendar.get(Calendar.HOUR_OF_DAY);

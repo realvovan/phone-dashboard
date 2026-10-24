@@ -122,6 +122,7 @@ public class BatteryWidget extends DashboardWidgetBase<BatteryWidgetInfo> {
 
 	@Override
 	public void startWidget() {
+		super.startWidget();
 		if (!this.isWidgetRunning) {
 			this.isWidgetRunning = true;
 			IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
@@ -135,6 +136,7 @@ public class BatteryWidget extends DashboardWidgetBase<BatteryWidgetInfo> {
 
 	@Override
 	public void pauseWidget() {
+		super.pauseWidget();
 		try {
 			this.context.unregisterReceiver(this.batteryReceiver);
 		} catch (IllegalArgumentException e) {

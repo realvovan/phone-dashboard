@@ -236,15 +236,6 @@ public class WeatherWidget
 	}
 
 	@Override
-	public void startWidget() {
-		LoopingWidget.startLoopingWidget(this);
-	}
-	@Override
-	public void pauseWidget() {
-		LoopingWidget.stopLoopingWidget(this);
-	}
-
-	@Override
 	public long onLoop() {
 		this.weatherProvider.getCurrentWeather(this.latitude, this.longitude, new HttpCallback<Weather>() {
 			@Override
