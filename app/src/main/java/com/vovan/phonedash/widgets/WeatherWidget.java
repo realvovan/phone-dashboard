@@ -54,6 +54,7 @@ public class WeatherWidget
 	private double latitude;
 	private double longitude;
 	private Context context;
+	private Weather lastWeatherResponse;
 
 	private final View rootView;
 	private final ImageView weatherIcon;
@@ -200,7 +201,7 @@ public class WeatherWidget
 		this.weatherIcon.setImageResource(getIconFromWeatherCode(info.weatherCode, info.isDay));
 		this.setConditionGradient(getColorsFromWeatherCode(info.weatherCode,info.isDay));
 
-		if (info.possibleFuturePptInHours != -1f) {
+		if (info.showPptPrediction && info.possibleFuturePptInHours != -1) {
 			String formattedHours;
 			if (info.possibleFuturePptInHours < 0.67f) {
 				formattedHours = "less than an hour";
@@ -242,6 +243,7 @@ public class WeatherWidget
 		this.weatherProvider.getCurrentWeather(this.latitude, this.longitude, new HttpCallback<Weather>() {
 			@Override
 			public void onSuccess(Weather weather) {
+				lastWeatherResponse = weather;
 				setWidgetInfo(weather);
 			}
 
@@ -258,7 +260,10 @@ public class WeatherWidget
 	}
 
 	@Override
-	public void onClick(View view) {}
+	public void onClick(View view) {
+		this.lastWeatherResponse.showPptPrediction = !this.lastWeatherResponse.showPptPrediction;
+		this.setWidgetInfo(this.lastWeatherResponse);
+	}
 
 	@Override
 	public boolean onLongClick(View view) {

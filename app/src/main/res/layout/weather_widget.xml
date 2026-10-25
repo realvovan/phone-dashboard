@@ -105,7 +105,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:includeFontPadding="false"
-        android:text="Weather unavailable"
+        android:text="Weather unavailable\nTap and hold to retry"
         android:textStyle="italic"
         android:textColor="#FFFFFF"
         android:textSize="14sp"

@@ -58,6 +58,7 @@ public class OpenMeteoWeatherProvider implements WeatherProvider {
 									if (pptProb < 35) { continue; }
 									weather.possibleFuturePptProbability = pptProb;
 									weather.possibleFuturePptInHours = secondsBetween / 3600f;
+									weather.showPptPrediction = true;
 									break;
 								}
 							}

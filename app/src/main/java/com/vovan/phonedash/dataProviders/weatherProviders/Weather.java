@@ -6,6 +6,7 @@ public class Weather {
 	public double minTemperature = 18f;
 	public int weatherCode = 0;
 	public boolean isDay = true;
+	public boolean showPptPrediction = false;
 	public int possibleFuturePptProbability = 0;
 	public float possibleFuturePptInHours = -1f;
 }
