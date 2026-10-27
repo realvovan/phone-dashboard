@@ -18,7 +18,16 @@ import java.util.Locale;
 
 public class TallClockWidget
 		extends DashboardWidgetBase<ClockWidgetInfo>
-		implements LoopingWidget {
+		implements LoopingWidget, ClickableWidget {
+	private static final int[] clockColors = new int[] {
+			0xFF102133, // blue
+			0xFF103314, // green
+			0xFF361F1F, // pink
+			0xFF241A09, // yellow
+			0xFF26140B, // orange
+			0xFF0D091F, // purple
+			0xFF1F0917, // magenta
+	};
 
 	private final View rootView;
 	private final TallTextView hoursTextView;
@@ -27,8 +36,8 @@ public class TallClockWidget
 	private final StrokedTextView separator1;
 	private final StrokedTextView separator2;
 
-	private int currentTextColor = 0xFFFFFFFF;
-	private float letterSpacing = 0.02f;
+	private int currentTextColor = clockColors[0];
+	private int currentColorIndex = 0;
 
 	@SuppressLint("InflateParams")
 	public TallClockWidget(Context context, WidgetContainer container, int gridX, int gridY) {
@@ -43,6 +52,7 @@ public class TallClockWidget
 		this.separator2 = this.rootView.findViewById(R.id.separator2);
 
 		this.addStateChangeListeners();
+		this.setWidgetColor(this.currentTextColor);
 
 		// Adjust text size and stroke when widget cell dimensions change
 		this.rootView.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
@@ -102,7 +112,8 @@ public class TallClockWidget
 		this.rootView.setPadding(paddingX, paddingY, paddingX, paddingY);
 
 		// Apply letter spacing
-		applyLetterSpacing(this.letterSpacing);
+		float letterSpacing = 0.02f;
+		applyLetterSpacing(letterSpacing);
 
 		// Calculate text size so all 6 digits and 2 separators fit horizontally with letter spacing
 		float textSize = Math.min(targetW / 4.7f, targetH / 1.7f);
@@ -146,6 +157,12 @@ public class TallClockWidget
 		this.setWidgetInfo(new ClockWidgetInfo(hours, minutes, seconds));
 
 		return 1000L;
+	}
+
+	@Override
+	public void onClick(View view) {
+		this.currentColorIndex = (this.currentColorIndex + 1) % clockColors.length;
+		this.setWidgetColor(clockColors[this.currentColorIndex]);
 	}
 
 	@Override
