@@ -52,9 +52,7 @@ public class MainActivity extends FullScreenActivity {
 		// widget container
 		container = new WidgetContainerLayout(this,handler,8,4);
 
-		Objects.requireNonNull(
-				container.addWidget(TallClockWidget.class,0,0)
-		).setWidgetColor(0xFF102133);
+		container.addWidget(TallClockWidget.class,0,0);
 		container.addWidget(BatteryWidget.class,7,0);
 		container.addWidget(WeatherWidget.class,5,0,weatherProvider,"Tetiiv",49.3695,29.6779); // hard coded the coords for my city lol;
 		container.addWidget(StepsWidget.class,3,0,8000,6500);
