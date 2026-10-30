@@ -37,7 +37,13 @@ public class AlertsProvider implements TrivogaProvider {
 		if (this.alertRequestLock != null) {
 			this.alertRequestLock.thenRun(() -> {
 				Log.i("AlertsClient","Getting alert in region from CompletableFuture");
-				callback.onSuccess(getTrivogaFromResponse(cachedResponse,region));
+				if (cachedResponse == null) {
+					callback.onFailure(new Exception(
+							"No cached response found after the request lock was released. This means a previous request has failed, please try again later"
+					));
+				} else {
+					callback.onSuccess(getTrivogaFromResponse(cachedResponse,region));
+				}
 			});
 			return;
 		}
@@ -61,7 +67,12 @@ public class AlertsProvider implements TrivogaProvider {
 			@Override
 			@EverythingIsNonNull
 			public void onFailure(Call<AlertsResponse> call, Throwable t) {
+				cachedResponse = null;
+				lastCachedResponse = currentTime;
 				callback.onFailure(new Exception(t));
+				//release the lock
+				alertRequestLock.complete(null);
+				alertRequestLock = null;
 			}
 		});
 	}
