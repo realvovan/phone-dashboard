@@ -150,7 +150,7 @@ public class TrivogaWidget
 			@Override
 			public void onFailure(Exception e) {
 				Log.w("TrivogaWidget", Objects.requireNonNull(e.getMessage()));
-				circleContainer.getBackground().setTint(GRAY_COLOR);
+				setDefaultWidgetInfo();
 			}
 		});
 		return 20000L;
@@ -180,7 +180,7 @@ public class TrivogaWidget
 	@Override
 	public Trivoga getDefaultWidgetInfo() {
 		Trivoga t = new Trivoga();
-		t.locationTitle = "Test region";
+		t.locationTitle = this.regionName == null ? "Test region" : this.regionName;
 		t.startedAt = null;
 		t.alertLevel = Trivoga.AlertLevel.UNKNOWN;
 		return t;
