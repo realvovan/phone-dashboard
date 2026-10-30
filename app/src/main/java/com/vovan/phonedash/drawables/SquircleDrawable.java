@@ -2,20 +2,18 @@ package com.vovan.phonedash.drawables;
 
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
-import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 /**
- * A custom Drawable that renders a linear gradient within a smooth squircle shape.
+ * A custom Drawable that renders a solid color within a smooth squircle shape.
  * Supports Figma corner smoothing (default ~0.6).
  */
 public class SquircleDrawable extends Drawable {
@@ -23,42 +21,54 @@ public class SquircleDrawable extends Drawable {
 	private final Path path = new Path();
 	private float cornerRadius;
 	private float cornerSmoothing = 0.6f;
-	private float inset = 0f;
-	private int[] gradientColors;
+	private float insetX = 0f;
+	private float insetY = 0f;
+	private int fillColor;
 
-	public SquircleDrawable(float cornerRadius, int[] gradientColors) {
+	public SquircleDrawable(float cornerRadius, int fillColor) {
 		this.cornerRadius = cornerRadius;
-		this.gradientColors = gradientColors != null ? gradientColors : new int[]{0xFF59B8F2, 0xFF388CE0};
+		this.fillColor = fillColor;
+		paint.setStyle(Paint.Style.FILL);
+		paint.setColor(fillColor);
 	}
 
 	public void setCornerRadius(float radius) {
 		if (this.cornerRadius != radius) {
 			this.cornerRadius = radius;
-			updatePathAndShader();
+			updatePath();
 			invalidateSelf();
 		}
 	}
 
 	public void setInset(float inset) {
-		if (this.inset != inset) {
-			this.inset = inset;
-			updatePathAndShader();
+		setInset(inset, inset);
+	}
+
+	public void setInset(float insetX, float insetY) {
+		if (this.insetX != insetX || this.insetY != insetY) {
+			this.insetX = insetX;
+			this.insetY = insetY;
+			updatePath();
 			invalidateSelf();
 		}
 	}
 
-	public void setGradientColors(int[] colors) {
-		if (colors != null && colors.length >= 2) {
-			this.gradientColors = colors;
-			updatePathAndShader();
+	public void setFillColor(int color) {
+		if (this.fillColor != color) {
+			this.fillColor = color;
+			paint.setColor(color);
 			invalidateSelf();
 		}
+	}
+
+	public int getFillColor() {
+		return fillColor;
 	}
 
 	public void setCornerSmoothing(float smoothing) {
 		if (this.cornerSmoothing != smoothing) {
 			this.cornerSmoothing = smoothing;
-			updatePathAndShader();
+			updatePath();
 			invalidateSelf();
 		}
 	}
@@ -66,36 +76,28 @@ public class SquircleDrawable extends Drawable {
 	@Override
 	protected void onBoundsChange(@NonNull Rect bounds) {
 		super.onBoundsChange(bounds);
-		updatePathAndShader();
+		updatePath();
 	}
 
-	private void updatePathAndShader() {
+	private void updatePath() {
 		Rect bounds = getBounds();
 		int w = bounds.width();
 		int h = bounds.height();
 		if (w <= 0 || h <= 0) return;
 
-		float left = bounds.left + inset;
-		float top = bounds.top + inset;
-		float right = bounds.right - inset;
-		float bottom = bounds.bottom - inset;
+		float left = bounds.left + insetX;
+		float top = bounds.top + insetY;
+		float right = bounds.right - insetX;
+		float bottom = bounds.bottom - insetY;
 
 		if (right <= left || bottom <= top) return;
 
 		RectF rect = new RectF(left, top, right, bottom);
 
-		LinearGradient shader = new LinearGradient(
-				0, top, 0, bottom,
-				gradientColors,
-				null,
-				Shader.TileMode.CLAMP
-		);
-		paint.setShader(shader);
-
 		createSquirclePath(path, rect, cornerRadius, cornerSmoothing);
 	}
 
-	private static void createSquirclePath(Path path, RectF rect, float r, float smoothing) {
+	static void createSquirclePath(Path path, RectF rect, float r, float smoothing) {
 		path.reset();
 		float left = rect.left;
 		float top = rect.top;

@@ -17,7 +17,7 @@ import com.vovan.phonedash.WidgetContainer;
 import com.vovan.phonedash.dataProviders.HttpCallback;
 import com.vovan.phonedash.dataProviders.weatherProviders.Weather;
 import com.vovan.phonedash.dataProviders.weatherProviders.WeatherProvider;
-import com.vovan.phonedash.drawables.SquircleDrawable;
+import com.vovan.phonedash.drawables.GradientSquircleDrawable;
 
 import java.util.Locale;
 
@@ -65,7 +65,7 @@ public class WeatherWidget
 	private final TextView lowTemp;
 	private final TextView rainReminder;
 	private final TextView weatherUnavailable;
-	private final SquircleDrawable backgroundDrawable;
+	private final GradientSquircleDrawable backgroundDrawable;
 
 	@SuppressLint("InflateParams")
 	public WeatherWidget(
@@ -94,7 +94,7 @@ public class WeatherWidget
 		this.setCity(city,latitude,longitude);
 
 		// Setup Squircle background with default clear sky gradient
-		this.backgroundDrawable = new SquircleDrawable(BASE_CORNER_RADIUS, CLEAR_SKY_DAY_COLORS);
+		this.backgroundDrawable = new GradientSquircleDrawable(BASE_CORNER_RADIUS, CLEAR_SKY_DAY_COLORS);
 		this.rootView.setBackground(this.backgroundDrawable);
 
 		this.addStateChangeListeners();
