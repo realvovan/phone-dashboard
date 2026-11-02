@@ -1,0 +1,9 @@
+from models import *
+
+# the generated file should be put inside assets/calendar_events.json for the program to see it
+def get_events() -> list[CalendarEvent]:
+    # color parameter is an ARGB hex
+    return [
+        CalendarEvent("Event 1", "08:00-09:50", 0xFF676767, date(2026,11,2),EventRepeatCycles.BIWEEKLY),
+        CalendarEvent("Databases lab", "all day", 0xFF676767, date(2026,9,5),EventRepeatCycles.NEVER)
+    ]
