@@ -1,11 +1,14 @@
 package com.vovan.phonedash.widgets;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.vovan.phonedash.R;
 import com.vovan.phonedash.WidgetContainer;
@@ -36,6 +39,8 @@ public class TallClockWidget
 	private final StrokedTextView separator1;
 	private final StrokedTextView separator2;
 
+	private ValueAnimator colorAnimator;
+
 	private int currentTextColor = clockColors[0];
 	private int currentColorIndex = 0;
 
@@ -52,7 +57,7 @@ public class TallClockWidget
 		this.separator2 = this.rootView.findViewById(R.id.separator2);
 
 		this.addStateChangeListeners();
-		this.setWidgetColor(this.currentTextColor);
+		this.setWidgetColor(this.currentTextColor, 0L);
 
 		// Adjust text size and stroke when widget cell dimensions change
 		this.rootView.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
@@ -80,27 +85,44 @@ public class TallClockWidget
 	 *
 	 * @param textColor The primary fill color for the numbers and colons.
 	 */
-	public void setWidgetColor(int textColor) {
+	public void setWidgetColor(int textColor, long easingTime) {
 		this.currentTextColor = textColor;
 		int strokeColor = getStrokeColorFromHsvValue(textColor, 0.9f);
-		this.applyColors(textColor, strokeColor);
+		this.applyColors(textColor, strokeColor, easingTime);
 	}
 
-	private void applyColors(int textColor, int strokeColor) {
-		this.hoursTextView.setTextColor(textColor);
-		this.hoursTextView.setStrokeColor(strokeColor);
+	private void applyColors(int textColor, int strokeColor, long easingTime) {
+		if (this.colorAnimator != null) {
+			this.colorAnimator.cancel();
+		}
 
-		this.minutesTextView.setTextColor(textColor);
-		this.minutesTextView.setStrokeColor(strokeColor);
+		final int startTextColor = this.hoursTextView.getCurrentTextColor();
+		final int startStrokeColor = this.hoursTextView.getStrokeColor();
+		final ArgbEvaluator evaluator = new ArgbEvaluator();
 
-		this.secondsTextView.setTextColor(textColor);
-		this.secondsTextView.setStrokeColor(strokeColor);
+		this.colorAnimator = ValueAnimator.ofFloat(0f, 1f);
+		this.colorAnimator.setDuration(easingTime);
+		this.colorAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+		this.colorAnimator.addUpdateListener(animation -> {
+			float fraction = animation.getAnimatedFraction();
+			int currentTextColor = (int) evaluator.evaluate(fraction, startTextColor, textColor);
+			int currentStrokeColor = (int) evaluator.evaluate(fraction, startStrokeColor, strokeColor);
+			this.hoursTextView.setTextColor(currentTextColor);
+			this.hoursTextView.setStrokeColor(currentStrokeColor);
 
-		this.separator1.setTextColor(textColor);
-		this.separator1.setStrokeColor(strokeColor);
+			this.minutesTextView.setTextColor(currentTextColor);
+			this.minutesTextView.setStrokeColor(currentStrokeColor);
 
-		this.separator2.setTextColor(textColor);
-		this.separator2.setStrokeColor(strokeColor);
+			this.secondsTextView.setTextColor(currentTextColor);
+			this.secondsTextView.setStrokeColor(currentStrokeColor);
+
+			this.separator1.setTextColor(currentTextColor);
+			this.separator1.setStrokeColor(currentStrokeColor);
+
+			this.separator2.setTextColor(currentTextColor);
+			this.separator2.setStrokeColor(currentStrokeColor);
+		});
+		this.colorAnimator.start();
 	}
 
 	private void adjustScaling(int width, int height) {
@@ -156,13 +178,18 @@ public class TallClockWidget
 
 		this.setWidgetInfo(new ClockWidgetInfo(hours, minutes, seconds));
 
+		if (minutes % 30 == 0 && seconds == 0) {
+			this.currentColorIndex = (this.currentColorIndex + 1) % clockColors.length;
+			this.setWidgetColor(clockColors[this.currentColorIndex], 750L);
+		}
+
 		return 1000L;
 	}
 
 	@Override
 	public void onClick(View view) {
 		this.currentColorIndex = (this.currentColorIndex + 1) % clockColors.length;
-		this.setWidgetColor(clockColors[this.currentColorIndex]);
+		this.setWidgetColor(clockColors[this.currentColorIndex], 150L);
 	}
 
 	@Override
