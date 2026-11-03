@@ -40,6 +40,7 @@ public class TallClockWidget
 	private final StrokedTextView separator2;
 
 	private ValueAnimator colorAnimator;
+	private boolean shouldUpdateClockColor = true;
 
 	private int currentTextColor = clockColors[0];
 	private int currentColorIndex = 0;
@@ -178,12 +179,21 @@ public class TallClockWidget
 
 		this.setWidgetInfo(new ClockWidgetInfo(hours, minutes, seconds));
 
-		if (minutes % 30 == 0 && seconds == 0) {
+		// updates the color every 30 minutes
+		if (minutes % 30 == 0 && this.shouldUpdateClockColor) {
 			this.currentColorIndex = (this.currentColorIndex + 1) % clockColors.length;
 			this.setWidgetColor(clockColors[this.currentColorIndex], 750L);
+			this.shouldUpdateClockColor = false;
 		}
+		// makes it so that the colors only change once every half an hour
+		// `shouldUpdateClockColor` is locked until the next minute.
+		// this is kinda a bullshitty way of handling this,
+		// because i need the widget to do different types of updates within different intervals
+		// (updates the clock every 500ms and the colors every 30minutes).
+		// i should realistically have a mechanism to dispatch multiple callbacks with different intervals
+		if (minutes == 1 || minutes == 31) this.shouldUpdateClockColor = true;
 
-		return 1000L;
+		return 500L;
 	}
 
 	@Override
