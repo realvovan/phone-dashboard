@@ -23,6 +23,7 @@ import com.vovan.phonedash.widgets.*;
 public class MainActivity extends FullScreenActivity {
 	private final boolean showGridSquares = false;
 	private WidgetContainerLayout container;
+	private WidgetPixelShifter shifter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -79,19 +80,14 @@ public class MainActivity extends FullScreenActivity {
 		mainLayout.addView(container);
 
 		// pixel shifting for the widgets
-		handler.post(new Runnable() {
-			private final WidgetPixelShifter shifter = new WidgetPixelShifter();
-			@Override
-			public void run() {
-				this.shifter.shift(container);
-				handler.postDelayed(this,30000); // shifts every 30 seconds
-			}
-		});
+		shifter = new WidgetPixelShifter(container, handler);
+		shifter.startShifting(30_000L, true);
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		shifter.close();
 		for (DashboardWidgetBase<?> i : container.widgetContainer.getWidgets()) {
 			container.widgetContainer.removeWidget(i);
 		}

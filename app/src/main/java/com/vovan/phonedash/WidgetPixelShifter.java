@@ -1,5 +1,7 @@
 package com.vovan.phonedash;
 
+import android.os.Handler;
+
 final class ShiftPattern {
 	public final int[][] shifts;
 	public ShiftPattern(int[]... shifts) {
@@ -37,11 +39,27 @@ final class WidgetPixelShifter {
 	private int currentShiftDirectionIndex = 0;
 	// keeps track of the current step within the shift direction
 	private int currentShiftStep = 0;
+	private long shiftCooldown = 0L;
+	private WidgetContainerLayout container;
+	private Handler handler;
 
-	public void shift(WidgetContainerLayout containerLayout) {
+	private Runnable shifterRunnable = new Runnable() {
+		@Override
+		public void run() {
+			shift();
+			handler.postDelayed(this, shiftCooldown);
+		}
+	};
+
+	public WidgetPixelShifter(WidgetContainerLayout container, Handler handler) {
+		this.container = container;
+		this.handler = handler;
+	}
+
+	public void shift() {
 		int[] dir = SHIFT_PATTERNS[currentShiftPatternIndex].shifts[currentShiftDirectionIndex];
-		containerLayout.setTranslationX(dir[0] * STEP_SIZE + containerLayout.getTranslationX());
-		containerLayout.setTranslationY(dir[1] * STEP_SIZE + containerLayout.getTranslationY());
+		this.container.setTranslationX(dir[0] * STEP_SIZE + this.container.getTranslationX());
+		this.container.setTranslationY(dir[1] * STEP_SIZE + this.container.getTranslationY());
 
 		currentShiftStep++;
 		if (currentShiftStep != SHIFT_LENGTH) return;
@@ -51,8 +69,52 @@ final class WidgetPixelShifter {
 		currentShiftDirectionIndex = 0;
 		currentShiftPatternIndex = getRandomShiftPatternIndex();
 
-		containerLayout.setTranslationX(0);
-		containerLayout.setTranslationY(0);
+		this.container.setTranslationX(0);
+		this.container.setTranslationY(0);
+	}
+
+	/**
+	 * @param cooldown Cooldown in milliseconds between the shifts
+	 * @param startImmediately Whether to shift once after calling this method without the cooldown
+	 */
+	public void startShifting(long cooldown, boolean startImmediately) {
+		this.shiftCooldown = cooldown;
+		if (startImmediately) {
+			this.handler.post(this.shifterRunnable);
+		} else {
+			this.handler.postDelayed(this.shifterRunnable, cooldown);
+		}
+	}
+
+	/**
+	 * @param resetShiftPatter The shift pattern and its current step will persist
+	 *                         when you call startShifting() if this parameter is true,
+	 *                         otherwise a new shift pattern will be selected
+	 */
+	public void stopShifting(boolean resetShiftPatter) {
+		this.handler.removeCallbacks(this.shifterRunnable);
+		if (resetShiftPatter) {
+			this.resetShifting(true);
+		}
+	}
+
+	/**
+	 * Sets the translation of the container to (0, 0)
+	 * @param changePatter Whether to change the pattern when you call startShifting()
+	 */
+	public void resetShifting(boolean changePatter) {
+		if (changePatter) this.currentShiftPatternIndex = getRandomShiftPatternIndex();
+		this.currentShiftDirectionIndex = 0;
+		this.currentShiftStep = 0;
+		this.container.setTranslationX(0);
+		this.container.setTranslationY(0);
+	}
+
+	public void close() {
+		this.stopShifting(true);
+		this.container = null;
+		this.handler = null;
+		this.shifterRunnable = null;
 	}
 
 	private static int[] createShift(int x, int y) { return new int[] {x,y}; }
