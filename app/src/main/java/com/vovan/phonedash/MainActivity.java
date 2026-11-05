@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.MotionEvent;
 
 import androidx.activity.EdgeToEdge;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -21,9 +22,22 @@ import com.vovan.phonedash.dataProviders.weatherProviders.OpenMeteo.OpenMeteoWea
 import com.vovan.phonedash.widgets.*;
 
 public class MainActivity extends FullScreenActivity {
-	private final boolean showGridSquares = false;
+	private final static long CONTAINER_TAP_ANIMATION_LEN = 100L;
+	private final static boolean SHOW_GRID_SQUARES = false;
 	private WidgetContainerLayout container;
 	private WidgetPixelShifter shifter;
+	private WidgetContainerDimmer dimmer;
+	private Handler handler;
+	private final Runnable scaleContainerToOneRunnable = new Runnable() {
+		@Override
+		public void run() {
+			container.animate()
+					.setDuration(CONTAINER_TAP_ANIMATION_LEN)
+					.scaleX(1f)
+					.scaleY(1f)
+					.start();
+		}
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +58,7 @@ public class MainActivity extends FullScreenActivity {
 		OpenMeteoWeatherProvider weatherProvider = new OpenMeteoWeatherProvider();
 		AlertsProvider alertsProvider = new AlertsProvider();
 		CalendarEventsProvider calendarEventsProvider = new CalendarEventsFromJsonProvider(this.getApplicationContext(),"calendar_events.json");
-		Handler handler = new Handler(Looper.getMainLooper());
+		handler = new Handler(Looper.getMainLooper());
 		// end dependencies
 
 		// backend server
@@ -61,7 +75,7 @@ public class MainActivity extends FullScreenActivity {
 		container.addWidget(TrivogaWidget.class,7,1,alertsProvider,"м. Київ");
 		container.addWidget(TrivogaWidget.class,7,2,alertsProvider,"Білоцерківський район");
 
-		if (this.showGridSquares) {
+		if (SHOW_GRID_SQUARES) {
 			for (int x = 0; x < container.getColumns(); x++) {
 				for (int y = 0; y < container.getRows(); y++) {
 					container.addWidget(new TestGradientWidget(this, container, x, y));
@@ -82,12 +96,41 @@ public class MainActivity extends FullScreenActivity {
 		// pixel shifting for the widgets
 		shifter = new WidgetPixelShifter(container, handler);
 		shifter.startShifting(30_000L, true);
+
+		// dimming the screen every once in a while
+		dimmer = new WidgetContainerDimmer(container, handler);
+		dimmer.startDimming(30_000L, 5000L, false);
+	}
+
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		boolean handled = super.dispatchTouchEvent(ev);
+		if (dimmer.getIsDimming() || (ev.getAction() == MotionEvent.ACTION_DOWN && !handled)) {
+			dimmer.resetDimming();
+			handler.removeCallbacks(scaleContainerToOneRunnable);
+			final float minZoom = 1f;
+			final float maxZoom = 1.15f;
+			float currentScale = container.getScaleX();
+			float newScale = Math.min(
+					currentScale + 0.03f * (1f - (currentScale - minZoom) / (maxZoom - minZoom)),
+					maxZoom
+			);
+			container.animate()
+					.setDuration(CONTAINER_TAP_ANIMATION_LEN)
+					.scaleX(newScale)
+					.scaleY(newScale)
+					.start();
+			handler.postDelayed(scaleContainerToOneRunnable, CONTAINER_TAP_ANIMATION_LEN);
+		}
+
+		return handled;
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		shifter.close();
+		dimmer.close();
 		for (DashboardWidgetBase<?> i : container.getWidgets()) {
 			boolean isRemoved = container.removeWidget(i);
 			if (!isRemoved)
