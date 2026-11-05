@@ -2,20 +2,14 @@ package com.vovan.phonedash.widgets;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-
 import com.vovan.phonedash.R;
-import com.vovan.phonedash.WidgetContainer;
+import com.vovan.phonedash.WidgetContainerLayout;
 import com.vovan.phonedash.widgetInfos.ClockWidgetInfo;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -31,7 +25,7 @@ public class ClockWidget
 	private final TextView separator2;
 
 	@SuppressLint("InflateParams")
-	public ClockWidget(Context context, WidgetContainer container, int gridX, int gridY) {
+	public ClockWidget(Context context, WidgetContainerLayout container, int gridX, int gridY) {
 		super(context, container, gridX, gridY);
 		this.rootView = LayoutInflater.from(context).inflate(R.layout.clock_widget, null);
 

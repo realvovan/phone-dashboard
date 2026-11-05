@@ -15,10 +15,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-
 import com.vovan.phonedash.R;
-import com.vovan.phonedash.WidgetContainer;
+import com.vovan.phonedash.WidgetContainerLayout;
 import com.vovan.phonedash.widgetInfos.BatteryWidgetInfo;
 
 import java.util.Locale;
@@ -47,7 +45,7 @@ public class BatteryWidget extends DashboardWidgetBase<BatteryWidgetInfo> {
 	};
 
 	@SuppressLint("InflateParams")
-	public BatteryWidget(Context context, WidgetContainer container, int gridX, int gridY) {
+	public BatteryWidget(Context context, WidgetContainerLayout container, int gridX, int gridY) {
 		super(context, container, gridX, gridY);
 
 		this.rootView = LayoutInflater.from(context).inflate(R.layout.battery_widget, null);

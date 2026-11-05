@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.vovan.phonedash.R;
-import com.vovan.phonedash.WidgetContainer;
+import com.vovan.phonedash.WidgetContainerLayout;
 import com.vovan.phonedash.dataProviders.HttpCallback;
 import com.vovan.phonedash.dataProviders.weatherProviders.Weather;
 import com.vovan.phonedash.dataProviders.weatherProviders.WeatherProvider;
@@ -70,7 +70,7 @@ public class WeatherWidget
 	@SuppressLint("InflateParams")
 	public WeatherWidget(
 			Context context,
-			WidgetContainer container,
+			WidgetContainerLayout container,
 			int gridX, int gridY,
 			WeatherProvider weatherProvider,
 			String city, double latitude, double longitude

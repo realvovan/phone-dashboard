@@ -21,7 +21,7 @@ import android.widget.TextView;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.vovan.phonedash.R;
-import com.vovan.phonedash.WidgetContainer;
+import com.vovan.phonedash.WidgetContainerLayout;
 import com.vovan.phonedash.dataProviders.HealthRegistry;
 import com.vovan.phonedash.dataProviders.HealthRegistry.*;
 import com.vovan.phonedash.drawables.PillGradientDrawable;
@@ -59,7 +59,7 @@ public class StepsWidget
 	private int distanceGoal;
 
 	@SuppressLint("InflateParams")
-	public StepsWidget(Context context, WidgetContainer container, int gridX, int gridY, int stepGoal, int distanceGoal) {
+	public StepsWidget(Context context, WidgetContainerLayout container, int gridX, int gridY, int stepGoal, int distanceGoal) {
 		super(context, container, gridX, gridY);
 
 		this.activity = (Activity) context;

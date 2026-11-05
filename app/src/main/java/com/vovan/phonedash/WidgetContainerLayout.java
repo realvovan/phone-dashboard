@@ -5,9 +5,14 @@ import android.os.Handler;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.vovan.phonedash.widgetHandlers.ClickableWidgetsHandler;
+import com.vovan.phonedash.widgetHandlers.LoopingWidgetsHandler;
+import com.vovan.phonedash.widgets.ClickableWidget;
 import com.vovan.phonedash.widgets.DashboardWidgetBase;
+import com.vovan.phonedash.widgets.LoopingWidget;
 
 import java.lang.reflect.Constructor;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -18,31 +23,24 @@ import java.util.Objects;
  * to add and remove widgets
  */
 public final class WidgetContainerLayout extends ViewGroup {
-	public final WidgetContainer widgetContainer;
+	private final WidgetContainer widgetContainer;
 	private final Context context;
+
+	// widget handlers
+	private final LoopingWidgetsHandler loopingWidgetsHandler;
+	private final ClickableWidgetsHandler clickableWidgetsHandler;
 
 	// Cached grid geometry to share between onMeasure and onLayout
 	private int mCellSize = 0;
 	private int mOffsetX = 0;
 	private int mOffsetY = 0;
 
-	public WidgetContainerLayout(Context context, WidgetContainer widgetContainer) {
-		super(context);
-		this.widgetContainer = widgetContainer;
-		this.context = context;
-
-		// Inflate and add views for all widgets currently in the container
-		for (DashboardWidgetBase<?> widget : widgetContainer.getWidgets()) {
-			View widgetView = widget.getView();
-			if (widgetView != null) {
-				addView(widgetView);
-			}
-		}
-	}
 	public WidgetContainerLayout(Context context, Handler handler, int columns, int rows) {
 		super(context);
 		this.widgetContainer = new WidgetContainer(columns,rows,handler);
 		this.context = context;
+		this.loopingWidgetsHandler = new LoopingWidgetsHandler(handler);
+		this.clickableWidgetsHandler = new ClickableWidgetsHandler();
 	}
 
 	public boolean addWidget(DashboardWidgetBase<?> widget) {
@@ -78,7 +76,7 @@ public final class WidgetContainerLayout extends ViewGroup {
 		Constructor<?> constructor = constructors[0];
 		Object[] args = new Object[params.length + BASE_ARG_COUNT];
 		args[0] = this.context;
-		args[1] = this.widgetContainer;
+		args[1] = this;
 		args[2] = gridX;
 		args[3] = gridY;
 		System.arraycopy(params,0,args,BASE_ARG_COUNT,params.length);
@@ -98,15 +96,33 @@ public final class WidgetContainerLayout extends ViewGroup {
 		boolean isRemoved = this.widgetContainer.removeWidget(widget);
 		if (!isRemoved) return false;
 		View widgetView = widget.getView();
-		if (widgetView != null) {
-			this.removeView(widgetView);
-			return true;
-		}
-		return false;
+		if (widgetView == null) return false;
+		this.removeView(widgetView);
+		widget.onWidgetRemoved();
+		return true;
 	}
 
 	public int getColumns() { return this.widgetContainer.columns; }
 	public int getRows() { return this.widgetContainer.rows; }
+	public List<DashboardWidgetBase<?>> getWidgets() { return this.widgetContainer.getWidgets(); }
+	public boolean isCellEmpty(int x, int y) { return this.widgetContainer.isCellEmpty(x, y); }
+
+	public void notifyWidgetStateChange(DashboardWidgetBase<?> widget, WidgetStateChange newState) {
+		if (widget instanceof LoopingWidget) {
+			if (newState == WidgetStateChange.STARTED) {
+				this.loopingWidgetsHandler.startLoopingWidget((LoopingWidget) widget);
+			} else {
+				this.loopingWidgetsHandler.stopLoopingWidget((LoopingWidget) widget);
+			}
+		}
+		if (widget instanceof ClickableWidget) {
+			if (newState == WidgetStateChange.STARTED) {
+				this.clickableWidgetsHandler.startClickableWidget((DashboardWidgetBase<?> & ClickableWidget) widget);
+			} else {
+				this.clickableWidgetsHandler.pauseClickableWidget(widget);
+			}
+		}
+	}
 
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {

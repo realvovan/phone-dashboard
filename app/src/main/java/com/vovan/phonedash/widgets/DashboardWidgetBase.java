@@ -1,12 +1,13 @@
 package com.vovan.phonedash.widgets;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 
-import com.vovan.phonedash.WidgetContainer;
+import com.vovan.phonedash.WidgetContainerLayout;
 import com.vovan.phonedash.WidgetStateChange;
 
 /**
@@ -16,13 +17,13 @@ import com.vovan.phonedash.WidgetStateChange;
 public abstract class DashboardWidgetBase<TWidgetInfo> {
 	private int gridX;
 	private int gridY;
-	protected WidgetContainer container;
+	protected WidgetContainerLayout containerLayout;
 
 	// Context parameter is required to inflate all widgets, even though it isn't stored in the widget
-	protected DashboardWidgetBase(Context context, WidgetContainer container, int gridX, int gridY) {
+	protected DashboardWidgetBase(Context context, WidgetContainerLayout containerLayout, int gridX, int gridY) {
 		this.gridX = gridX;
 		this.gridY = gridY;
-		this.container = container;
+		this.containerLayout = containerLayout;
 	}
 
 	public abstract int width();
@@ -55,6 +56,9 @@ public abstract class DashboardWidgetBase<TWidgetInfo> {
 			}
 		});
 	}
+	private void safeNotifyWidgetStateChange(WidgetStateChange newState) {
+		if (this.containerLayout != null) this.containerLayout.notifyWidgetStateChange(this, newState);
+	}
 
 	/**
 	 * This method is called when the widget is removed from its container
@@ -62,7 +66,7 @@ public abstract class DashboardWidgetBase<TWidgetInfo> {
 	 */
 	@CallSuper
 	public void onWidgetRemoved() {
-		this.container = null;
+		this.containerLayout = null;
 	}
 
 	public void setDefaultWidgetInfo() {
@@ -71,10 +75,10 @@ public abstract class DashboardWidgetBase<TWidgetInfo> {
 
 	@CallSuper
 	public void startWidget() {
-		this.container.notifyWidgetStateChange(this, WidgetStateChange.STARTED);
+		this.safeNotifyWidgetStateChange(WidgetStateChange.STARTED);
 	}
 	@CallSuper
 	public void pauseWidget() {
-		this.container.notifyWidgetStateChange(this, WidgetStateChange.PAUSED);
+		this.safeNotifyWidgetStateChange(WidgetStateChange.PAUSED);
 	}
 }

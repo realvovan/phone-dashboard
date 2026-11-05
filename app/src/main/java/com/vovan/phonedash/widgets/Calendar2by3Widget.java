@@ -18,11 +18,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.vovan.phonedash.R;
-import com.vovan.phonedash.WidgetContainer;
+import com.vovan.phonedash.WidgetContainerLayout;
 import com.vovan.phonedash.dataProviders.calendarEventsProviders.CalendarEventsProvider;
 import com.vovan.phonedash.drawables.SquircleDrawable;
 import com.vovan.phonedash.widgetInfos.CalendarWidgetInfo;
-import com.vovan.phonedash.widgetInfos.EmptyWidgetInfo;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -66,7 +65,7 @@ public class Calendar2by3Widget
 	};
 
 	@SuppressLint("InflateParams")
-	public Calendar2by3Widget(Context context, WidgetContainer container, int gridX, int gridY, CalendarEventsProvider eventsProvider) {
+	public Calendar2by3Widget(Context context, WidgetContainerLayout container, int gridX, int gridY, CalendarEventsProvider eventsProvider) {
 		super(context, container, gridX, gridY);
 
 		this.eventsProvider = eventsProvider;

@@ -64,7 +64,7 @@ public class MainActivity extends FullScreenActivity {
 		if (this.showGridSquares) {
 			for (int x = 0; x < container.getColumns(); x++) {
 				for (int y = 0; y < container.getRows(); y++) {
-					container.addWidget(new TestGradientWidget(this, container.widgetContainer, x, y));
+					container.addWidget(new TestGradientWidget(this, container, x, y));
 				}
 			}
 		}
@@ -88,8 +88,13 @@ public class MainActivity extends FullScreenActivity {
 	protected void onDestroy() {
 		super.onDestroy();
 		shifter.close();
-		for (DashboardWidgetBase<?> i : container.widgetContainer.getWidgets()) {
-			container.widgetContainer.removeWidget(i);
+		for (DashboardWidgetBase<?> i : container.getWidgets()) {
+			boolean isRemoved = container.removeWidget(i);
+			if (!isRemoved)
+				Log.w("MainActivity",String.format(
+						"Failed to remove widget of type %s on MainActivity destroying",
+						i.getClass().getName()
+				));
 		}
 	}
 }

@@ -3,9 +3,7 @@ package com.vovan.phonedash;
 import android.os.Handler;
 
 import com.vovan.phonedash.widgetHandlers.*;
-import com.vovan.phonedash.widgets.ClickableWidget;
 import com.vovan.phonedash.widgets.DashboardWidgetBase;
-import com.vovan.phonedash.widgets.LoopingWidget;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,19 +15,15 @@ import java.util.Set;
  * organized within a fixed X by Y (columns by rows) grid.
  * This class is independent of Android Activity lifecycles or UI specifics.
  */
-public final class WidgetContainer {
+final class WidgetContainer {
 	public final int columns;
 	public final int rows;
 	private final Set<DashboardWidgetBase<?>> widgets;
-	private final LoopingWidgetsHandler loopingWidgetsHandler;
-	private final ClickableWidgetsHandler clickableWidgetsHandler;
 
 	public WidgetContainer(int columns, int rows, Handler handler) {
 		this.columns = columns;
 		this.rows = rows;
 		this.widgets = new HashSet<>();
-		this.loopingWidgetsHandler = new LoopingWidgetsHandler(handler);
-		this.clickableWidgetsHandler = new ClickableWidgetsHandler();
 	}
 
 	/**
@@ -69,28 +63,7 @@ public final class WidgetContainer {
 	 * @return true if the widget was found and removed, false otherwise.
 	 */
 	public boolean removeWidget(DashboardWidgetBase<?> widget) {
-		boolean isRemoved = this.widgets.remove(widget);
-		if (!isRemoved) return false;
-		widget.onWidgetRemoved();
-		if (widget instanceof LoopingWidget) this.loopingWidgetsHandler.stopLoopingWidget((LoopingWidget) widget);
-		return true;
-	}
-
-	public void notifyWidgetStateChange(DashboardWidgetBase<?> widget, WidgetStateChange newState) {
-		if (widget instanceof LoopingWidget) {
-			if (newState == WidgetStateChange.STARTED) {
-				this.loopingWidgetsHandler.startLoopingWidget((LoopingWidget) widget);
-			} else {
-				this.loopingWidgetsHandler.stopLoopingWidget((LoopingWidget) widget);
-			}
-		}
-		if (widget instanceof ClickableWidget) {
-			if (newState == WidgetStateChange.STARTED) {
-				this.clickableWidgetsHandler.startClickableWidget((DashboardWidgetBase<?> & ClickableWidget) widget);
-			} else {
-				this.clickableWidgetsHandler.pauseClickableWidget(widget);
-			}
-		}
+		return this.widgets.remove(widget);
 	}
 
 	public boolean isCellEmpty(int x, int y) {

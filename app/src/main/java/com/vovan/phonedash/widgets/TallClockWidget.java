@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.vovan.phonedash.R;
-import com.vovan.phonedash.WidgetContainer;
+import com.vovan.phonedash.WidgetContainerLayout;
 import com.vovan.phonedash.drawables.StrokedTextView;
 import com.vovan.phonedash.drawables.TallTextView;
 import com.vovan.phonedash.widgetInfos.ClockWidgetInfo;
@@ -46,7 +46,7 @@ public class TallClockWidget
 	private int currentColorIndex = 0;
 
 	@SuppressLint("InflateParams")
-	public TallClockWidget(Context context, WidgetContainer container, int gridX, int gridY) {
+	public TallClockWidget(Context context, WidgetContainerLayout container, int gridX, int gridY) {
 		super(context, container, gridX, gridY);
 
 		this.rootView = LayoutInflater.from(context).inflate(R.layout.tall_clock_widget, null);

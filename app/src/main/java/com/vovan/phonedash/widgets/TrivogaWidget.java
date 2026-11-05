@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.vovan.phonedash.R;
-import com.vovan.phonedash.WidgetContainer;
+import com.vovan.phonedash.WidgetContainerLayout;
 import com.vovan.phonedash.dataProviders.HttpCallback;
 import com.vovan.phonedash.dataProviders.trivogaProviders.Trivoga;
 import com.vovan.phonedash.dataProviders.trivogaProviders.TrivogaProvider;
@@ -45,7 +45,7 @@ public class TrivogaWidget
 	@SuppressLint("InflateParams")
 	public TrivogaWidget(
 			Context context,
-			WidgetContainer container,
+			WidgetContainerLayout container,
 			int gridX, int gridY,
 			TrivogaProvider trivogaProvider,
 			String regionName)
@@ -144,7 +144,6 @@ public class TrivogaWidget
 			@Override
 			public void onSuccess(Trivoga trivoga) {
 				setWidgetInfo(trivoga);
-				Log.i("TrivogaWidget",String.format("Updated widget for region %s",regionName));
 			}
 
 			@Override
