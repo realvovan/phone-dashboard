@@ -97,9 +97,9 @@ public class MainActivity extends FullScreenActivity {
 		shifter = new WidgetPixelShifter(container, handler);
 		shifter.startShifting(30_000L, true);
 
-		// dimming the screen every once in a while
+		// dimming the screen every six minutes
 		dimmer = new WidgetContainerDimmer(container, handler);
-		dimmer.startDimming(30_000L, 5000L, false);
+		dimmer.startDimming(360_000L, 5000L, false);
 	}
 
 	@Override

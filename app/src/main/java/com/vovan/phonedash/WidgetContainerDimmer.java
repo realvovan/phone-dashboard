@@ -4,7 +4,7 @@ import android.os.Handler;
 
 final class WidgetContainerDimmer {
 	private final static long DIMMING_ANIMATION_LEN = 10000L;
-	private final static long WAKING_ANIMATION_LEN = 400L;
+	private final static long WAKING_ANIMATION_LEN = 2500L;
 
 	private Handler handler;
 	private WidgetContainerLayout container;
