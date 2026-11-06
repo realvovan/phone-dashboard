@@ -28,7 +28,8 @@ def create_calendar_events_json(path: str, events: list[CalendarEvent]):
 			payload,
 			file,
 			default=json_serialize,
-			indent=4
+			indent=4,
+			ensure_ascii=False
 		)
 
 def main():
