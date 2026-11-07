@@ -30,11 +30,16 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField(
-            "String",
-            "ALERTS_IN_UA_KEY",
-            "\"${localProperties.getProperty("ALERTS_IN_UA_KEY","")}\""
+        fun addConfigField(name : String) {
+            buildConfigField(
+                "String",
+                name,
+                "\"${localProperties.getProperty(name,"")}\""
             )
+        }
+
+        addConfigField("ALERTS_IN_UA_KEY")
+        addConfigField("CALENDAR_EVENTS_URL")
     }
 
     buildTypes {

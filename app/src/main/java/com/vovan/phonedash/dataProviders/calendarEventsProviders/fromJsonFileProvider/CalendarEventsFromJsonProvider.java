@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.stream.JsonReader;
+import com.vovan.phonedash.dataProviders.HttpCallback;
 import com.vovan.phonedash.dataProviders.calendarEventsProviders.CalendarEventsProvider;
 import com.vovan.phonedash.widgetInfos.CalendarWidgetInfo;
 
@@ -35,15 +36,17 @@ public class CalendarEventsFromJsonProvider implements CalendarEventsProvider {
 	}
 
 	@Override
-	public CalendarWidgetInfo.CalendarEvent[] getEventsForDay(
+	public void getEventsForDay(
 			int year, int month, int day,
-			boolean includeRepeated) {
+			boolean includeRepeated,
+			HttpCallback<CalendarWidgetInfo.CalendarEvent[]> callback) {
 
 		LocalDate targetDate;
 		try {
 			targetDate = LocalDate.of(year, month, day);
 		} catch (Exception e) {
-			return new CalendarWidgetInfo.CalendarEvent[0];
+			callback.onFailure(e);
+			return;
 		}
 
 		List<CalendarWidgetInfo.CalendarEvent> matchingEvents = new ArrayList<>();
@@ -85,12 +88,14 @@ public class CalendarEventsFromJsonProvider implements CalendarEventsProvider {
 			}
 		} catch (IOException e) {
 			Log.e("JsonCalendarProvider",e.getMessage());
+			callback.onFailure(e);
+			return;
 		}
 
-		return matchingEvents.toArray(new CalendarWidgetInfo.CalendarEvent[0]);
+		callback.onSuccess(matchingEvents.toArray(new CalendarWidgetInfo.CalendarEvent[0]));
 	}
 
-	private static boolean isMatchingEvent(
+	public static boolean isMatchingEvent(
 			EventModel event,
 			LocalDate targetDate,
 			boolean includeRepeated,

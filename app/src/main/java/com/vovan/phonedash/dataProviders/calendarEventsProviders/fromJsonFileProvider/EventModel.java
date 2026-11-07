@@ -1,6 +1,6 @@
 package com.vovan.phonedash.dataProviders.calendarEventsProviders.fromJsonFileProvider;
 
-class EventModel {
+public class EventModel {
 	public String name;
 	public String duration;
 	public int color;

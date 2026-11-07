@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import androidx.annotation.NonNull;
 
 import com.vovan.phonedash.R;
 import com.vovan.phonedash.WidgetContainerLayout;
+import com.vovan.phonedash.dataProviders.HttpCallback;
 import com.vovan.phonedash.dataProviders.calendarEventsProviders.CalendarEventsProvider;
 import com.vovan.phonedash.drawables.SquircleDrawable;
 import com.vovan.phonedash.widgetInfos.CalendarWidgetInfo;
@@ -26,6 +28,7 @@ import com.vovan.phonedash.widgetInfos.CalendarWidgetInfo;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * A 2:3 Calendar Widget created based on the SVG design specification.
@@ -210,17 +213,24 @@ public class Calendar2by3Widget
 		// EEE for short names and EEEE for full names
 		String weekday = now.format(DateTimeFormatter.ofPattern("EEEE",Locale.ENGLISH)).toUpperCase(Locale.ENGLISH);
 
-		this.lastInfo = new CalendarWidgetInfo(
-				1,
-				3,
-				this.eventsProvider.getEventsForDay(
-						now.getYear(), now.getMonthValue(), now.getDayOfMonth(),
-						true
-				),
-				now.getDayOfMonth(),
-				weekday
+		this.eventsProvider.getEventsForDay(
+				now.getYear(), now.getMonthValue(), now.getDayOfMonth(),
+				true,
+				new HttpCallback<>() {
+					@Override
+					public void onSuccess(CalendarWidgetInfo.CalendarEvent[] calendarEvents) {
+						lastInfo = new CalendarWidgetInfo(1, 3, calendarEvents, now.getDayOfMonth(), weekday);
+						setWidgetInfo(lastInfo);
+					}
+
+					@Override
+					public void onFailure(Exception e) {
+						Log.w("Calendar2by3Widget", Objects.requireNonNull(e.getMessage()));
+						lastInfo = new CalendarWidgetInfo(1, 3, null, now.getDayOfMonth(), weekday);
+						setWidgetInfo(lastInfo);
+					}
+				}
 		);
-		this.setWidgetInfo(this.lastInfo);
 	}
 
 	/**

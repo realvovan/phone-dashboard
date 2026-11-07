@@ -17,3 +17,5 @@ sdk.dir=
 # Add your custom API configurations below.
 # These will be read by your build.gradle script.
 ALERTS_IN_UA_KEY=
+# Note that the url must end with a slash ('/')
+CALENDAR_EVENTS_URL=

@@ -16,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.vovan.phonedash.backend.DashboardServerService;
 import com.vovan.phonedash.dataProviders.calendarEventsProviders.CalendarEventsProvider;
+import com.vovan.phonedash.dataProviders.calendarEventsProviders.formJsonHttpProvider.CalendarEventsFromHttpProvider;
 import com.vovan.phonedash.dataProviders.calendarEventsProviders.fromJsonFileProvider.CalendarEventsFromJsonProvider;
 import com.vovan.phonedash.dataProviders.trivogaProviders.alertsInUaProvider.AlertsProvider;
 import com.vovan.phonedash.dataProviders.weatherProviders.OpenMeteo.OpenMeteoWeatherProvider;
@@ -57,7 +58,7 @@ public class MainActivity extends FullScreenActivity {
 		// dependencies
 		OpenMeteoWeatherProvider weatherProvider = new OpenMeteoWeatherProvider();
 		AlertsProvider alertsProvider = new AlertsProvider();
-		CalendarEventsProvider calendarEventsProvider = new CalendarEventsFromJsonProvider(this.getApplicationContext(),"calendar_events.json");
+		CalendarEventsProvider calendarEventsProvider = new CalendarEventsFromHttpProvider(BuildConfig.CALENDAR_EVENTS_URL);
 		handler = new Handler(Looper.getMainLooper());
 		// end dependencies
 
